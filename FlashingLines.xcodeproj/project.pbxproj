@@ -14,7 +14,7 @@
 		91619AB02CCFFF060028C3D1 /* Exceptions for "FlashingLines" folder in "FlashingLines" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 91619A9D2CCFFF050028C3D1 /* FlashingLines */;
 		};
@@ -147,7 +147,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H5R82ZFKSP;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FlashingLines/Info.plist;
+				INFOPLIST_FILE = FlashingLines/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
@@ -179,7 +179,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = H5R82ZFKSP;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = FlashingLines/Info.plist;
+				INFOPLIST_FILE = FlashingLines/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;

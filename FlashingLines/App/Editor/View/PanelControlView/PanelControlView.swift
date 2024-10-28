@@ -92,6 +92,15 @@ final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where 
             currentMaxX += buttonSize.width + spacing
         }
     }
+    
+    // MARK: Internal Methods
+    func setButton(_ action: Action, selected: Bool) {
+        buttons[action]?.isSelected = selected
+    }
+    
+    func setButton(_ action: Action, enabled: Bool) {
+        buttons[action]?.isEnabled = enabled
+    }
 }
 
 // MARK: - Private Methods

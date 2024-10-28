@@ -91,6 +91,10 @@ extension ToolbarView {
 extension ToolbarView {
     private func addSubviews() {
         addSubview(panelView)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            self.panelView.setButton(.pencil, selected: true)
+        }
     }
 }
 

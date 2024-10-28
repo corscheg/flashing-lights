@@ -12,7 +12,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     // MARK: Private Properties
-    private let container: AppDependencyContainer = AppDependencyContainer()
+    private let container: EditorDependencyContainer = EditorDependencyContainer()
     
     // MARK: UIApplicationDelegate
     func application(

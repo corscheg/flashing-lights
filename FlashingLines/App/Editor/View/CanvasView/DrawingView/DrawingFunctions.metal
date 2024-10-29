@@ -13,21 +13,29 @@ kernel void draw_paintings(texture2d<float, access::write> output [[texture(0)]]
     int lower = 0;
     int upper = m_count - 1;
     const constant Painting *toBePainted = nullptr;
-    while (lower <= upper) {
-        int mid = (lower + upper) / 2;
-        const constant Painting *current = paintings + mid;
-        
+//    while (lower <= upper) {
+//        int mid = (lower + upper) / 2;
+//        const constant Painting *current = paintings + mid;
+//        
+//        if (current->location[0] == gid[0] && current->location[1] == gid[1]) {
+//            toBePainted = current;
+//            break;
+//        } else if (current->location[0] < gid[0]) {
+//            upper = mid - 1;
+//        } else if (current->location[0] == gid[0] && current->location[1] < gid[1]) {
+//            upper = mid - 1;
+//        } else if (current->location[0] == gid[0] && current->location[1] > gid[1]) {
+//            lower = mid + 1;
+//        } else if (current->location[0] > gid[0]) {
+//            lower = mid + 1;
+//        }
+//    }
+    
+    for (int i = 0; i != m_count; ++i) {
+        const constant Painting *current = paintings + i;
         if (current->location[0] == gid[0] && current->location[1] == gid[1]) {
             toBePainted = current;
             break;
-        } else if (current->location[0] < gid[0]) {
-            upper = mid - 1;
-        } else if (current->location[0] == gid[0] && current->location[1] < gid[1]) {
-            upper = mid - 1;
-        } else if (current->location[0] == gid[0] && current->location[1] > gid[1]) {
-            lower = mid + 1;
-        } else if (current->location[0] > gid[0]) {
-            lower = mid + 1;
         }
     }
     
@@ -35,4 +43,5 @@ kernel void draw_paintings(texture2d<float, access::write> output [[texture(0)]]
         float4 color = float4(toBePainted->color.values);
         output.write(color, toBePainted->location);
     }
+    
 }

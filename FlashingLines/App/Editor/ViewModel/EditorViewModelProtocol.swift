@@ -7,5 +7,6 @@ import Combine
 import Foundation
 
 protocol EditorViewModelProtocol {
+    var statePublisher: any Publisher<EditorCommandPipe, Never> { get }
     func setupBindings(_ bindings: EditorBindings) -> any Sequence<AnyCancellable>
 }

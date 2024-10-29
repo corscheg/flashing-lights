@@ -62,15 +62,14 @@ extension CanvasResponderView {
     private func sendEvent(_ event: PlainEvent, touches: Set<UITouch>) {
         guard let touch = touches.first else { return }
         let location = touch.location(in: self)
-        let point = Point(cgPoint: location, scale: 2)
         
         let externalEvent: TouchEvent = switch event {
         case .began:
-                .began(location: point)
+                .began(location: location)
         case .moved:
-                .moved(location: point)
+                .moved(location: location)
         case .ended:
-                .ended(location: point)
+                .ended(location: location)
         }
         
         eventSubject.send(externalEvent)

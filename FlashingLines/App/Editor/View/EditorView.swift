@@ -155,5 +155,26 @@ extension EditorView {
     
     private func setupBindings() {
         viewModel.setupBindings(bindings).forEach { $0.store(in: &cancellables) }
+        
+        viewModel.statePublisher
+            .sink { [weak self] state in
+                guard let `self` else { return }
+                
+                for command in state.commands {
+                    switch command {
+                    case .begin(location: let location):
+                        canvasView.startDrawing(at: location)
+                    case .continue(location: let location, width: let width, color: let color):
+                        canvasView.continueDrawing(to: location, brushWidth: width, color: UIColor(color: color).cgColor)
+                    case .end(location: let location, width: let width, color: let color):
+                        canvasView.endDrawing(at: location, brushWidth: width, color: UIColor(color: color).cgColor)
+                    case .movePaintingToUndo:
+                        canvasView.movePaintingToUndo()
+                    case .moveUndoToDrawn:
+                        canvasView.moveUndoToDrawn()
+                    }
+                }
+            }
+            .store(in: &cancellables)
     }
 }

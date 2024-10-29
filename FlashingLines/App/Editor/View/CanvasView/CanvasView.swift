@@ -29,6 +29,7 @@ final class CanvasView: UIView {
         return imageView
     }()
     
+    private lazy var paintingView = PaintingView()
     private lazy var canvasResponderView = CanvasResponderView(screen: screen)
     
     // MARK: Initializers
@@ -59,7 +60,29 @@ final class CanvasView: UIView {
         super.layoutSubviews()
         
         paperView.frame = bounds
+        paintingView.frame = bounds
         canvasResponderView.frame = bounds
+    }
+    
+    // MARK: Internal Methods
+    func startDrawing(at start: CGPoint) {
+        paintingView.startDrawing(at: start)
+    }
+    
+    func continueDrawing(to point: CGPoint, brushWidth: CGFloat, color: CGColor) {
+        paintingView.continueDrawing(to: point, brushWidth: brushWidth, color: color)
+    }
+    
+    func endDrawing(at point: CGPoint, brushWidth: CGFloat, color: CGColor) {
+        paintingView.endDrawing(at: point, brushWidth: brushWidth, color: color)
+    }
+    
+    func moveUndoToDrawn() {
+        paintingView.moveUndoToDrawn()
+    }
+    
+    func movePaintingToUndo() {
+        paintingView.movePaintingToUndo()
     }
 }
 
@@ -67,6 +90,7 @@ final class CanvasView: UIView {
 extension CanvasView {
     private func addSubviews() {
         addSubview(paperView)
+        addSubview(paintingView)
         addSubview(canvasResponderView)
     }
 }

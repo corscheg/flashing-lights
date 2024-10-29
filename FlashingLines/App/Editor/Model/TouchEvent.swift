@@ -6,7 +6,7 @@
 import Foundation
 
 enum TouchEvent {
-    case began(location: Point)
-    case moved(location: Point)
-    case ended(location: Point)
+    case began(location: CGPoint)
+    case moved(location: CGPoint)
+    case ended(location: CGPoint)
 }

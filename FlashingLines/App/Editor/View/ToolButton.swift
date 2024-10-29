@@ -30,6 +30,16 @@ final class ToolButton: UIButton {
     }
     
     // MARK: UIView
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard bounds.width < sizes.minimalTapArea.width || bounds.height < sizes.minimalTapArea.height else {
+            return super.point(inside: point, with: event)
+        }
+        
+        let dx = min(0, (bounds.width - sizes.minimalTapArea.width) / 2)
+        let dy = min(0, (bounds.height - sizes.minimalTapArea.height) / 2)
+        return bounds.insetBy(dx: dx, dy: dy).contains(point)
+    }
+    
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         switch self.size {
         case .small:

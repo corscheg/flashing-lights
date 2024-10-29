@@ -70,8 +70,17 @@ final class PaintingView: UIView {
     
     func movePaintingToUndo() {
         guard let drawableImage = drawableView.image else { return }
+        undoableView.clearBuffer()
         undoableView.setImage(drawableImage)
         drawableView.clear()
+    }
+    
+    func performUndo() {
+        undoableView.undo()
+    }
+    
+    func performRedo() {
+        undoableView.redo()
     }
 }
 

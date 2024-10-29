@@ -156,7 +156,7 @@ extension EditorView {
     private func setupBindings() {
         viewModel.setupBindings(bindings).forEach { $0.store(in: &cancellables) }
         
-        viewModel.statePublisher
+        viewModel.commandPublisher
             .sink { [weak self] state in
                 guard let `self` else { return }
                 
@@ -172,8 +172,20 @@ extension EditorView {
                         canvasView.movePaintingToUndo()
                     case .moveUndoToDrawn:
                         canvasView.moveUndoToDrawn()
+                    case .undo:
+                        canvasView.performUndo()
+                    case .redo:
+                        canvasView.performRedo()
                     }
                 }
+            }
+            .store(in: &cancellables)
+        
+        viewModel.statePublisher
+            .sink { [weak self] state in
+                guard let `self` else { return }
+                navbarView.setUndoState(state.undoButton)
+                navbarView.setRedoState(state.redoButton)
             }
             .store(in: &cancellables)
     }

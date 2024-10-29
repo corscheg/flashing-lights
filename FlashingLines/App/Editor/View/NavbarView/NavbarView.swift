@@ -164,6 +164,17 @@ final class NavbarView: UIView {
         
         layerControl.frame = CGRect(origin: layerControlOrigin, size: layerControlSize)
     }
+    
+    // MARK: Internal Methods
+    func setUndoState(_ state: EditorInterfaceState.ButtonState) {
+        undoControl.setButton(.undo, enabled: state.isEnabled)
+        undoControl.setButton(.undo, selected: state.isSelected)
+    }
+    
+    func setRedoState(_ state: EditorInterfaceState.ButtonState) {
+        undoControl.setButton(.redo, enabled: state.isEnabled)
+        undoControl.setButton(.redo, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings

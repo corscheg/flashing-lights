@@ -84,6 +84,14 @@ final class CanvasView: UIView {
     func movePaintingToUndo() {
         paintingView.movePaintingToUndo()
     }
+    
+    func performUndo() {
+        paintingView.performUndo()
+    }
+    
+    func performRedo() {
+        paintingView.performRedo()
+    }
 }
 
 // MARK: - Private Methods

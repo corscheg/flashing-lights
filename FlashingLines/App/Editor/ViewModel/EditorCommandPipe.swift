@@ -17,5 +17,7 @@ extension EditorCommandPipe {
         case end(location: CGPoint, width: CGFloat, color: Color)
         case movePaintingToUndo
         case moveUndoToDrawn
+        case undo
+        case redo
     }
 }

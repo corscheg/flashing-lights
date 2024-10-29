@@ -3,13 +3,20 @@
 //  28.10.2024
 //
 
+import Combine
 import UIKit
 
 final class CanvasView: UIView {
     
+    // MARK: Internal Properties
+    var eventPublisher: some Publisher<TouchEvent, Never> {
+        canvasResponderView.eventPublisher
+    }
+    
     // MARK: Private Properties
     private let cornerRadiuses: any CornerRadiuses
     private let images: any Images
+    private let screen: UIScreen
     
     // MARK: Visual Components
     private lazy var paperView: UIImageView = {
@@ -22,17 +29,20 @@ final class CanvasView: UIView {
         return imageView
     }()
     
+    private lazy var canvasResponderView = CanvasResponderView(screen: screen)
+    
     // MARK: Initializers
-    init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images) {
+    init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
         self.cornerRadiuses = cornerRadiuses
         self.images = images
+        self.screen = screen
         super.init(frame: frame)
         
         addSubviews()
     }
     
-    convenience init(cornerRadiuses: any CornerRadiuses, images: any Images) {
-        self.init(frame: .zero, cornerRadiuses: cornerRadiuses, images: images)
+    convenience init(cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
+        self.init(frame: .zero, cornerRadiuses: cornerRadiuses, images: images, screen: screen)
     }
     
     @available(*, unavailable)
@@ -49,6 +59,7 @@ final class CanvasView: UIView {
         super.layoutSubviews()
         
         paperView.frame = bounds
+        canvasResponderView.frame = bounds
     }
 }
 
@@ -56,5 +67,6 @@ final class CanvasView: UIView {
 extension CanvasView {
     private func addSubviews() {
         addSubview(paperView)
+        addSubview(canvasResponderView)
     }
 }

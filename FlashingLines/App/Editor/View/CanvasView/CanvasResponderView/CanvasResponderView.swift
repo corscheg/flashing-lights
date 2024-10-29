@@ -9,10 +9,26 @@ import UIKit
 final class CanvasResponderView: UIView {
     
     // MARK: Internal Properties
-    var eventPublisher: some Publisher<Event, Never> { eventSubject.eraseToAnyPublisher() }
+    var eventPublisher: some Publisher<TouchEvent, Never> { eventSubject.eraseToAnyPublisher() }
     
     // MARK: Private Properties
-    private let eventSubject: PassthroughSubject<Event, Never> = .init()
+    private let eventSubject: PassthroughSubject<TouchEvent, Never> = .init()
+    private let screen: UIScreen
+    
+    // MARK: Initializers
+    init(frame: CGRect, screen: UIScreen) {
+        self.screen = screen
+        super.init(frame: frame)
+    }
+    
+    convenience init(screen: UIScreen) {
+        self.init(frame: .zero, screen: screen)
+    }
+    
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: UIResponder
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -32,15 +48,6 @@ final class CanvasResponderView: UIView {
     }
 }
 
-// MARK: - Event
-extension CanvasResponderView {
-    enum Event {
-        case began(location: Point)
-        case moved(location: Point)
-        case ended(location: Point)
-    }
-}
-
 // MARK: - PlainEvent
 extension CanvasResponderView {
     enum PlainEvent {
@@ -57,7 +64,7 @@ extension CanvasResponderView {
         let location = touch.location(in: self)
         let point = Point(cgPoint: location, scale: 2)
         
-        let externalEvent: Event = switch event {
+        let externalEvent: TouchEvent = switch event {
         case .began:
                 .began(location: point)
         case .moved:

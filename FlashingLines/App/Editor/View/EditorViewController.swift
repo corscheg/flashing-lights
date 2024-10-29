@@ -5,23 +5,34 @@
 
 import UIKit
 
-final class EditorViewController: UIViewController {
+final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewController {
     
     // MARK: Private Properties
+    private let viewModel: ViewModel
     private let colors: any Colors
     private let icons: any Icons
     private let layout: any Layout
     private let images: any Images
+    private let screen: UIScreen
     
     // MARK: Visual Components
-    private lazy var editorView: EditorView = EditorView(colors: colors, icons: icons, layout: layout, images: images)
+    private lazy var editorView: EditorView<ViewModel> = EditorView(
+        viewModel: viewModel,
+        colors: colors,
+        icons: icons,
+        layout: layout,
+        images: images,
+        screen: screen
+    )
     
     // MARK: Initializers
-    init(colors: any Colors, icons: any Icons, layout: any Layout, images: any Images) {
+    init(viewModel: ViewModel, colors: any Colors, icons: any Icons, layout: any Layout, images: any Images, screen: UIScreen) {
+        self.viewModel = viewModel
         self.colors = colors
         self.icons = icons
         self.layout = layout
         self.images = images
+        self.screen = screen
         super.init(nibName: nil, bundle: nil)
     }
     

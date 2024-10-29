@@ -3,24 +3,40 @@
 //  28.10.2024
 //
 
+import Combine
 import UIKit
 
-final class EditorView: UIView {
+final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
     // MARK: Private Properties
+    private let viewModel: ViewModel
     private let colors: any Colors
     private let icons: any Icons
     private let layout: any Layout
     private let images: any Images
+    private let screen: UIScreen
+    private let bindings: EditorBindings = .init()
+    
+    private var cancellables: Set<AnyCancellable> = []
     
     // MARK: Visual Components
     private lazy var navbarView: NavbarView = {
         let view = NavbarView(colors: colors.interface, icons: icons.navbar, layout: layout)
         
+        view.bindings.onUndoTap.subscribe(bindings.onUndoTap).store(in: &cancellables)
+        view.bindings.onRedoTap.subscribe(bindings.onRedoTap).store(in: &cancellables)
+        view.bindings.onDeleteTap.subscribe(bindings.onDeleteTap).store(in: &cancellables)
+        view.bindings.onNewLayerTap.subscribe(bindings.onNewLayerTap).store(in: &cancellables)
+        view.bindings.onShowLayersTap.subscribe(bindings.onShowLayersTap).store(in: &cancellables)
+        view.bindings.onPlayTap.subscribe(bindings.onPlayTap).store(in: &cancellables)
+        view.bindings.onPauseTap.subscribe(bindings.onPauseTap).store(in: &cancellables)
+        
         return view
     }()
     
     private lazy var canvasView: CanvasView = {
-        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images)
+        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images, screen: screen)
+        
+        view.eventPublisher.subscribe(bindings.onTouchEvent).store(in: &cancellables)
         
         return view
     }()
@@ -28,24 +44,55 @@ final class EditorView: UIView {
     private lazy var toolbarView: ToolbarView = {
         let view = ToolbarView(colors: colors, icons: icons.toolbar, layout: layout)
         
+        view.bindings.onPencilTap.subscribe(bindings.onPencilTap).store(in: &cancellables)
+        view.bindings.onBrushTap.subscribe(bindings.onBrushTap).store(in: &cancellables)
+        view.bindings.onEraseTap.subscribe(bindings.onEraseTap).store(in: &cancellables)
+        view.bindings.onShapeTap.subscribe(bindings.onShapesTap).store(in: &cancellables)
+        
         return view
     }()
     
     // MARK: Initializers
-    init(frame: CGRect, colors: any Colors, icons: any Icons, layout: any Layout, images: any Images) {
+    init(
+        frame: CGRect,
+        viewModel: ViewModel,
+        colors: any Colors,
+        icons: any Icons,
+        layout: any Layout,
+        images: any Images,
+        screen: UIScreen
+    ) {
+        self.viewModel = viewModel
         self.colors = colors
         self.icons = icons
         self.layout = layout
         self.images = images
+        self.screen = screen
         
         super.init(frame: frame)
         
         setupView()
         addSubviews()
+        setupBindings()
     }
     
-    convenience init(colors: any Colors, icons: any Icons, layout: any Layout, images: any Images) {
-        self.init(frame: .zero, colors: colors, icons: icons, layout: layout, images: images)
+    convenience init(
+        viewModel: ViewModel,
+        colors: any Colors,
+        icons: any Icons,
+        layout: any Layout,
+        images: any Images,
+        screen: UIScreen
+    ) {
+        self.init(
+            frame: .zero,
+            viewModel: viewModel,
+            colors: colors,
+            icons: icons,
+            layout: layout,
+            images: images,
+            screen: screen
+        )
     }
     
     @available(*, unavailable)
@@ -104,5 +151,9 @@ extension EditorView {
         addSubview(navbarView)
         addSubview(canvasView)
         addSubview(toolbarView)
+    }
+    
+    private func setupBindings() {
+        viewModel.setupBindings(bindings).forEach { $0.store(in: &cancellables) }
     }
 }

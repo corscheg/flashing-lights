@@ -25,6 +25,20 @@ final class EditorDependencyContainer {
     
     // MARK: Internal Methods
     func makeEditorViewController() -> UIViewController {
-        EditorViewController(colors: colors, icons: icons, layout: layout, images: images)
+        EditorViewController(
+            viewModel: makeEditorViewModel(),
+            colors: colors,
+            icons: icons,
+            layout: layout,
+            images: images,
+            screen: windowScene.screen
+        )
+    }
+}
+
+// MARK: - Private Methods
+extension EditorDependencyContainer {
+    func makeEditorViewModel() -> some EditorViewModelProtocol {
+        EditorViewModel()
     }
 }

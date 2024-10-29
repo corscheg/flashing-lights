@@ -7,6 +7,8 @@ import Foundation
 
 extension Point {
     init(cgPoint: CGPoint, scale: CGFloat) {
-        self.init(x: UInt16(cgPoint.x.scaled(by: Double(scale))), y: UInt16(cgPoint.y.scaled(by: Double(scale))))
+        let clampedX = max(.zero, cgPoint.x)
+        let clampedY = max(.zero, cgPoint.y)
+        self.init(x: UInt16(clampedX.scaled(by: Double(scale))), y: UInt16(clampedY.scaled(by: Double(scale))))
     }
 }

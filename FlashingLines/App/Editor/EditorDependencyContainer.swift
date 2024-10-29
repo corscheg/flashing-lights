@@ -13,6 +13,8 @@ final class EditorDependencyContainer {
     private let layout: any Layout
     private let images: any Images
     private let windowScene: UIWindowScene
+    private let metalDevice: MTLDevice = MTLCreateSystemDefaultDevice()!
+    private let metalFunctionName: String = "draw_paintings"
     
     // MARK: Initializers
     init(windowScene: UIWindowScene) {
@@ -31,7 +33,9 @@ final class EditorDependencyContainer {
             icons: icons,
             layout: layout,
             images: images,
-            screen: windowScene.screen
+            screen: windowScene.screen,
+            device: metalDevice,
+            metalFunctionName: metalFunctionName
         )
     }
 }

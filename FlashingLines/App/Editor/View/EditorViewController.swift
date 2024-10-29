@@ -14,6 +14,8 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
     private let layout: any Layout
     private let images: any Images
     private let screen: UIScreen
+    private let device: MTLDevice
+    private let metalFunctionName: String
     
     // MARK: Visual Components
     private lazy var editorView: EditorView<ViewModel> = EditorView(
@@ -22,17 +24,30 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
         icons: icons,
         layout: layout,
         images: images,
-        screen: screen
+        screen: screen,
+        device: device,
+        metalFunctionName: metalFunctionName
     )
     
     // MARK: Initializers
-    init(viewModel: ViewModel, colors: any Colors, icons: any Icons, layout: any Layout, images: any Images, screen: UIScreen) {
+    init(
+        viewModel: ViewModel,
+        colors: any Colors,
+        icons: any Icons,
+        layout: any Layout,
+        images: any Images,
+        screen: UIScreen,
+        device: MTLDevice,
+        metalFunctionName: String
+    ) {
         self.viewModel = viewModel
         self.colors = colors
         self.icons = icons
         self.layout = layout
         self.images = images
         self.screen = screen
+        self.device = device
+        self.metalFunctionName = metalFunctionName
         super.init(nibName: nil, bundle: nil)
     }
     

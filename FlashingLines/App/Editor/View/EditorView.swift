@@ -15,6 +15,8 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
     private let images: any Images
     private let screen: UIScreen
     private let bindings: EditorBindings = .init()
+    private let device: MTLDevice
+    private let metalFunctionName: String
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -34,7 +36,13 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
     }()
     
     private lazy var canvasView: CanvasView = {
-        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images, screen: screen)
+        let view = CanvasView(
+            cornerRadiuses: layout.cornerRadiuses,
+            images: images,
+            screen: screen,
+            device: device,
+            metalFunctionName: metalFunctionName
+        )
         
         view.eventPublisher.subscribe(bindings.onTouchEvent).store(in: &cancellables)
         
@@ -60,7 +68,9 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
         icons: any Icons,
         layout: any Layout,
         images: any Images,
-        screen: UIScreen
+        screen: UIScreen,
+        device: MTLDevice,
+        metalFunctionName: String
     ) {
         self.viewModel = viewModel
         self.colors = colors
@@ -68,6 +78,8 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
         self.layout = layout
         self.images = images
         self.screen = screen
+        self.device = device
+        self.metalFunctionName = metalFunctionName
         
         super.init(frame: frame)
         
@@ -82,7 +94,9 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
         icons: any Icons,
         layout: any Layout,
         images: any Images,
-        screen: UIScreen
+        screen: UIScreen,
+        device: MTLDevice,
+        metalFunctionName: String
     ) {
         self.init(
             frame: .zero,
@@ -91,7 +105,9 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
             icons: icons,
             layout: layout,
             images: images,
-            screen: screen
+            screen: screen,
+            device: device,
+            metalFunctionName: metalFunctionName
         )
     }
     
@@ -155,5 +171,16 @@ extension EditorView {
     
     private func setupBindings() {
         viewModel.setupBindings(bindings).forEach { $0.store(in: &cancellables) }
+        
+        viewModel.statePublisher
+            .sink { [weak self] state in
+                self?.updateState(state)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateState(_ editorState: EditorState) {
+        print("Hey")
+        canvasView.updatePaintings(editorState.paintings)
     }
 }

@@ -17,6 +17,8 @@ final class CanvasView: UIView {
     private let cornerRadiuses: any CornerRadiuses
     private let images: any Images
     private let screen: UIScreen
+    private let device: MTLDevice
+    private let metalFunctionName: String
     
     // MARK: Visual Components
     private lazy var paperView: UIImageView = {
@@ -30,19 +32,42 @@ final class CanvasView: UIView {
     }()
     
     private lazy var canvasResponderView = CanvasResponderView(screen: screen)
+    private lazy var drawingView = DrawingView(device: device, functionName: metalFunctionName)
     
     // MARK: Initializers
-    init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
+    init(
+        frame: CGRect,
+        cornerRadiuses: any CornerRadiuses,
+        images: any Images,
+        screen: UIScreen,
+        device: MTLDevice,
+        metalFunctionName: String
+    ) {
         self.cornerRadiuses = cornerRadiuses
         self.images = images
         self.screen = screen
+        self.device = device
+        self.metalFunctionName = metalFunctionName
         super.init(frame: frame)
         
         addSubviews()
     }
     
-    convenience init(cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
-        self.init(frame: .zero, cornerRadiuses: cornerRadiuses, images: images, screen: screen)
+    convenience init(
+        cornerRadiuses: any CornerRadiuses,
+        images: any Images,
+        screen: UIScreen,
+        device: MTLDevice,
+        metalFunctionName: String
+    ) {
+        self.init(
+            frame: .zero,
+            cornerRadiuses: cornerRadiuses,
+            images: images,
+            screen: screen,
+            device: device,
+            metalFunctionName: metalFunctionName
+        )
     }
     
     @available(*, unavailable)
@@ -59,7 +84,13 @@ final class CanvasView: UIView {
         super.layoutSubviews()
         
         paperView.frame = bounds
+        drawingView.frame = bounds
         canvasResponderView.frame = bounds
+    }
+    
+    // MARK: Internal Methods
+    func updatePaintings(_ paintings: [Painting]) {
+        drawingView.updatePaintings(paintings)
     }
 }
 
@@ -67,6 +98,7 @@ final class CanvasView: UIView {
 extension CanvasView {
     private func addSubviews() {
         addSubview(paperView)
+        addSubview(drawingView)
         addSubview(canvasResponderView)
     }
 }

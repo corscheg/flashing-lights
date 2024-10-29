@@ -66,6 +66,6 @@ extension CanvasResponderView {
                 .ended(location: point)
         }
         
-        eventSubject.send(Event)
+        eventSubject.send(externalEvent)
     }
 }

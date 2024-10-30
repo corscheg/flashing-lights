@@ -6,7 +6,7 @@
 import Combine
 import Foundation
 
-struct EditorBindings {
+struct EditorBindings<Layer> {
     let onUndoTap: PassthroughSubject<Void, Never> = .init()
     let onRedoTap: PassthroughSubject<Void, Never> = .init()
     let onDeleteTap: PassthroughSubject<Void, Never> = .init()
@@ -19,4 +19,5 @@ struct EditorBindings {
     let onEraseTap: PassthroughSubject<Void, Never> = .init()
     let onShapesTap: PassthroughSubject<Void, Never> = .init()
     let onTouchEvent: PassthroughSubject<TouchEvent, Never> = .init()
+    let onLayerTaken: PassthroughSubject<Layer, Never> = .init()
 }

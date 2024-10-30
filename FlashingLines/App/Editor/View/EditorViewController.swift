@@ -5,7 +5,7 @@
 
 import UIKit
 
-final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewController {
+final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewController where ViewModel.Layer == UIImage {
     
     // MARK: Private Properties
     private let viewModel: ViewModel

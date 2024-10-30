@@ -6,8 +6,9 @@
 import Combine
 import Foundation
 
-protocol EditorViewModelProtocol {
-    var commandPublisher: any Publisher<EditorCommandPipe, Never> { get }
+protocol EditorViewModelProtocol<Layer> {
+    associatedtype Layer
+    var commandPublisher: any Publisher<EditorCommandPipe<Layer>, Never> { get }
     var statePublisher: any Publisher<EditorInterfaceState, Never> { get }
-    func setupBindings(_ bindings: EditorBindings) -> any Sequence<AnyCancellable>
+    func setupBindings(_ bindings: EditorBindings<Layer>) -> any Sequence<AnyCancellable>
 }

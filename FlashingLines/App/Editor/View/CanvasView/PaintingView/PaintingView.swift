@@ -8,22 +8,31 @@ import UIKit
 final class PaintingView: UIView {
     
     // MARK: Private Properties
+    private let opacities: any Opacities
     private var lastLocation: CGPoint?
     
     // MARK: Visual Components
     private lazy var drawnView = DrawnPictureView()
     private lazy var undoableView = UndoablePictureView()
     private lazy var drawableView = DrawablePictureView()
+    private lazy var assistImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.alpha = opacities.assistOpacity
+        
+        return imageView
+    }()
     
     // MARK: Initializers
-    override init(frame: CGRect) {
+    init(frame: CGRect, opacities: any Opacities) {
+        self.opacities = opacities
         super.init(frame: frame)
         isUserInteractionEnabled = false
         addSubviews()
     }
     
-    convenience init() {
-        self.init(frame: .zero)
+    convenience init(opacities: any Opacities) {
+        self.init(frame: .zero, opacities: opacities)
     }
     
     @available(*, unavailable)
@@ -38,6 +47,7 @@ final class PaintingView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        assistImageView.frame = bounds
         drawnView.frame = bounds
         undoableView.frame = bounds
         drawableView.frame = bounds
@@ -82,11 +92,21 @@ final class PaintingView: UIView {
     func performRedo() {
         undoableView.redo()
     }
+    
+    func takeCurrentImage() -> UIImage? {
+        defer { drawnView.clear() }
+        return drawnView.image
+    }
+    
+    func setAssistImage(_ image: UIImage?) {
+        assistImageView.image = image
+    }
 }
 
 // MARK: - Private Methods
 extension PaintingView {
     private func addSubviews() {
+        addSubview(assistImageView)
         addSubview(drawnView)
         addSubview(undoableView)
         addSubview(drawableView)

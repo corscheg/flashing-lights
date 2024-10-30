@@ -6,7 +6,7 @@
 import Combine
 import UIKit
 
-final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
+final class EditorView<ViewModel: EditorViewModelProtocol>: UIView where ViewModel.Layer == UIImage {
     // MARK: Private Properties
     private let viewModel: ViewModel
     private let colors: any Colors
@@ -14,7 +14,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
     private let layout: any Layout
     private let images: any Images
     private let screen: UIScreen
-    private let bindings: EditorBindings = .init()
+    private let bindings: EditorBindings<UIImage> = .init()
     
     private var cancellables: Set<AnyCancellable> = []
     
@@ -34,7 +34,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView {
     }()
     
     private lazy var canvasView: CanvasView = {
-        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images, screen: screen)
+        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images, opacities: colors.opacities, screen: screen)
         
         view.eventPublisher.subscribe(bindings.onTouchEvent).store(in: &cancellables)
         
@@ -176,6 +176,11 @@ extension EditorView {
                         canvasView.performUndo()
                     case .redo:
                         canvasView.performRedo()
+                    case .takeLayer:
+                        guard let image = canvasView.takeCurrentImage() else { return }
+                        bindings.onLayerTaken.send(image)
+                    case .setAssistLayer(let image):
+                        canvasView.setAssistImage(image)
                     }
                 }
             }

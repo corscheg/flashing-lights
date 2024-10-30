@@ -38,7 +38,7 @@ final class EditorDependencyContainer {
 
 // MARK: - Private Methods
 extension EditorDependencyContainer {
-    func makeEditorViewModel() -> some EditorViewModelProtocol {
-        EditorViewModel()
+    func makeEditorViewModel() -> some EditorViewModelProtocol<UIImage> {
+        EditorViewModel<UIImage>()
     }
 }

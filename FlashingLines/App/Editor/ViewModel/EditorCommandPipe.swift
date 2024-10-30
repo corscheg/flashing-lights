@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct EditorCommandPipe {
+struct EditorCommandPipe<Layer> {
     let commands: [Command]
 }
 
@@ -19,5 +19,7 @@ extension EditorCommandPipe {
         case moveUndoToDrawn
         case undo
         case redo
+        case takeLayer
+        case setAssistLayer(Layer?)
     }
 }

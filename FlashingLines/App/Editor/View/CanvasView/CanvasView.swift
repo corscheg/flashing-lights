@@ -16,6 +16,7 @@ final class CanvasView: UIView {
     // MARK: Private Properties
     private let cornerRadiuses: any CornerRadiuses
     private let images: any Images
+    private let opacities: any Opacities
     private let screen: UIScreen
     
     // MARK: Visual Components
@@ -29,11 +30,12 @@ final class CanvasView: UIView {
         return imageView
     }()
     
-    private lazy var paintingView = PaintingView()
+    private lazy var paintingView = PaintingView(opacities: opacities)
     private lazy var canvasResponderView = CanvasResponderView(screen: screen)
     
     // MARK: Initializers
-    init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
+    init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images, opacities: any Opacities, screen: UIScreen) {
+        self.opacities = opacities
         self.cornerRadiuses = cornerRadiuses
         self.images = images
         self.screen = screen
@@ -42,8 +44,8 @@ final class CanvasView: UIView {
         addSubviews()
     }
     
-    convenience init(cornerRadiuses: any CornerRadiuses, images: any Images, screen: UIScreen) {
-        self.init(frame: .zero, cornerRadiuses: cornerRadiuses, images: images, screen: screen)
+    convenience init(cornerRadiuses: any CornerRadiuses, images: any Images, opacities: any Opacities, screen: UIScreen) {
+        self.init(frame: .zero, cornerRadiuses: cornerRadiuses, images: images, opacities: opacities, screen: screen)
     }
     
     @available(*, unavailable)
@@ -91,6 +93,14 @@ final class CanvasView: UIView {
     
     func performRedo() {
         paintingView.performRedo()
+    }
+    
+    func takeCurrentImage() -> UIImage? {
+        paintingView.takeCurrentImage()
+    }
+    
+    func setAssistImage(_ image: UIImage?) {
+        paintingView.setAssistImage(image)
     }
 }
 

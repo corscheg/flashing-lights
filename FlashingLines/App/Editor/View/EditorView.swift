@@ -181,6 +181,10 @@ extension EditorView {
                         bindings.onLayerTaken.send(image)
                     case .setAssistLayer(let image):
                         canvasView.setAssistImage(image)
+                    case .clearCanvas:
+                        canvasView.clearPainting()
+                    case .setDrawn(let image):
+                        canvasView.setDrawnImage(image)
                     }
                 }
             }

@@ -101,6 +101,17 @@ final class PaintingView: UIView {
     func setAssistImage(_ image: UIImage?) {
         assistImageView.image = image
     }
+    
+    func clear() {
+        drawnView.clear()
+        undoableView.clear()
+        drawnView.clear()
+    }
+    
+    func setDrawnImage(_ image: UIImage) {
+        drawnView.clear()
+        drawnView.mergeImage(image)
+    }
 }
 
 // MARK: - Private Methods

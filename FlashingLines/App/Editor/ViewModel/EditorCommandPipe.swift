@@ -6,7 +6,7 @@
 import Foundation
 
 struct EditorCommandPipe<Layer> {
-    let commands: [Command]
+    var commands: [Command]
 }
 
 // MARK: - Command
@@ -21,5 +21,7 @@ extension EditorCommandPipe {
         case redo
         case takeLayer
         case setAssistLayer(Layer?)
+        case clearCanvas
+        case setDrawn(Layer)
     }
 }

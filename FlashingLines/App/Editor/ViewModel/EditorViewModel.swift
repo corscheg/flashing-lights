@@ -64,6 +64,17 @@ extension EditorViewModel: EditorViewModelProtocol {
             bindings.onLayerTaken.sink { [weak self] layer in
                 self?.layerStack.push(layer)
                 self?.commandSubject.send(EditorCommandPipe(commands: [.setAssistLayer(layer)]))
+            },
+            
+            bindings.onDeleteTap.sink { [weak self] in
+                var commandPipe = EditorCommandPipe<Layer>(commands: [.clearCanvas])
+                if let layer = self?.layerStack.pop() {
+                    commandPipe.commands.append(.setDrawn(layer))
+                }
+                
+                commandPipe.commands.append(.setAssistLayer(self?.layerStack.peek()))
+                
+                self?.commandSubject.send(commandPipe)
             }
         ]
     }

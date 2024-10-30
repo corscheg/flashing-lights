@@ -102,6 +102,14 @@ final class CanvasView: UIView {
     func setAssistImage(_ image: UIImage?) {
         paintingView.setAssistImage(image)
     }
+    
+    func clearPainting() {
+        paintingView.clear()
+    }
+    
+    func setDrawnImage(_ image: UIImage) {
+        paintingView.setDrawnImage(image)
+    }
 }
 
 // MARK: - Private Methods

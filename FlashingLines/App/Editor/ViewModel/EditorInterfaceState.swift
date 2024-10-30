@@ -10,7 +10,10 @@ struct EditorInterfaceState {
     var redoButton: ButtonState
     
     static var initial: EditorInterfaceState {
-        .init(undoButton: .init(isSelected: false, isEnabled: false), redoButton: .init(isSelected: false, isEnabled: false))
+        .init(
+            undoButton: .init(isSelected: false, isEnabled: false),
+            redoButton: .init(isSelected: false, isEnabled: false)
+        )
     }
 }
 

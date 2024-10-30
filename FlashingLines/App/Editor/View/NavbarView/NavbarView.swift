@@ -175,6 +175,31 @@ final class NavbarView: UIView {
         undoControl.setButton(.redo, enabled: state.isEnabled)
         undoControl.setButton(.redo, selected: state.isSelected)
     }
+    
+    func setDeleteState(_ state: EditorInterfaceState.ButtonState) {
+        layerControl.setButton(.delete, enabled: state.isEnabled)
+        layerControl.setButton(.delete, selected: state.isSelected)
+    }
+    
+    func setNewLayerState(_ state: EditorInterfaceState.ButtonState) {
+        layerControl.setButton(.addLayer, enabled: state.isEnabled)
+        layerControl.setButton(.addLayer, selected: state.isSelected)
+    }
+    
+    func setShowLayersState(_ state: EditorInterfaceState.ButtonState) {
+        layerControl.setButton(.showLayers, enabled: state.isEnabled)
+        layerControl.setButton(.showLayers, selected: state.isSelected)
+    }
+    
+    func setPlayState(_ state: EditorInterfaceState.ButtonState) {
+        playbackControl.setButton(.play, enabled: state.isEnabled)
+        playbackControl.setButton(.play, selected: state.isSelected)
+    }
+    
+    func setPauseState(_ state: EditorInterfaceState.ButtonState) {
+        playbackControl.setButton(.pause, enabled: state.isEnabled)
+        playbackControl.setButton(.pause, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings

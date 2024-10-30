@@ -6,7 +6,7 @@
 import Combine
 import UIKit
 
-final class EditorView<ViewModel: EditorViewModelProtocol>: UIView where ViewModel.Layer == UIImage {
+final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>: UIView where ViewModel.Layer == UIImage, Playable.Element == UIImage, ViewModel.Playable == Playable {
     // MARK: Private Properties
     private let viewModel: ViewModel
     private let colors: any Colors
@@ -34,7 +34,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol>: UIView where ViewMod
     }()
     
     private lazy var canvasView: CanvasView = {
-        let view = CanvasView(cornerRadiuses: layout.cornerRadiuses, images: images, opacities: colors.opacities, screen: screen)
+        let view = CanvasView<Playable>(cornerRadiuses: layout.cornerRadiuses, images: images, opacities: colors.opacities, screen: screen)
         
         view.eventPublisher.subscribe(bindings.onTouchEvent).store(in: &cancellables)
         
@@ -185,6 +185,10 @@ extension EditorView {
                         canvasView.clearPainting()
                     case .setDrawn(let image):
                         canvasView.setDrawnImage(image)
+                    case .play(let playable):
+                        canvasView.startPlaying(playable, at: 10)
+                    case .stop:
+                        canvasView.stopPlaying()
                     }
                 }
             }
@@ -195,6 +199,15 @@ extension EditorView {
                 guard let `self` else { return }
                 navbarView.setUndoState(state.undoButton)
                 navbarView.setRedoState(state.redoButton)
+                navbarView.setDeleteState(state.deleteButton)
+                navbarView.setNewLayerState(state.newLayerButton)
+                navbarView.setShowLayersState(state.showLayersButton)
+                navbarView.setPlayState(state.playButton)
+                navbarView.setPauseState(state.pauseButton)
+                toolbarView.setPencilState(state.pencilButton)
+                toolbarView.setBrushState(state.brushButton)
+                toolbarView.setEraseState(state.eraseButton)
+                toolbarView.setShapesState(state.shapesButton)
             }
             .store(in: &cancellables)
     }

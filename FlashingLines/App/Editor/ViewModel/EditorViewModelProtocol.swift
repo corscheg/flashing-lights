@@ -6,9 +6,10 @@
 import Combine
 import Foundation
 
-protocol EditorViewModelProtocol<Layer> {
+protocol EditorViewModelProtocol<Playable> {
     associatedtype Layer
-    var commandPublisher: any Publisher<EditorCommandPipe<Layer>, Never> { get }
+    associatedtype Playable: Collection where Playable.Element == Layer
+    var commandPublisher: any Publisher<EditorCommandPipe<Layer, Playable>, Never> { get }
     var statePublisher: any Publisher<EditorInterfaceState, Never> { get }
     func setupBindings(_ bindings: EditorBindings<Layer>) -> any Sequence<AnyCancellable>
 }

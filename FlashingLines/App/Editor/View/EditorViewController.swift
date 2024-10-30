@@ -16,7 +16,7 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
     private let screen: UIScreen
     
     // MARK: Visual Components
-    private lazy var editorView: EditorView<ViewModel> = EditorView(
+    private lazy var editorView: EditorView<ViewModel, ViewModel.Playable> = EditorView(
         viewModel: viewModel,
         colors: colors,
         icons: icons,

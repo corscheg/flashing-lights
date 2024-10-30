@@ -6,7 +6,7 @@
 import Combine
 import UIKit
 
-final class CanvasView: UIView {
+final class CanvasView<Playable: Collection>: UIView where Playable.Element == UIImage {
     
     // MARK: Internal Properties
     var eventPublisher: some Publisher<TouchEvent, Never> {
@@ -32,6 +32,7 @@ final class CanvasView: UIView {
     
     private lazy var paintingView = PaintingView(opacities: opacities)
     private lazy var canvasResponderView = CanvasResponderView(screen: screen)
+    private lazy var playerView = PlayerView<Playable>()
     
     // MARK: Initializers
     init(frame: CGRect, cornerRadiuses: any CornerRadiuses, images: any Images, opacities: any Opacities, screen: UIScreen) {
@@ -42,6 +43,7 @@ final class CanvasView: UIView {
         super.init(frame: frame)
         
         addSubviews()
+        playerView.isHidden = true
     }
     
     convenience init(cornerRadiuses: any CornerRadiuses, images: any Images, opacities: any Opacities, screen: UIScreen) {
@@ -62,6 +64,7 @@ final class CanvasView: UIView {
         super.layoutSubviews()
         
         paperView.frame = bounds
+        playerView.frame = bounds
         paintingView.frame = bounds
         canvasResponderView.frame = bounds
     }
@@ -110,12 +113,27 @@ final class CanvasView: UIView {
     func setDrawnImage(_ image: UIImage) {
         paintingView.setDrawnImage(image)
     }
+    
+    func startPlaying(_ playable: Playable, at framesPerSecond: UInt) {
+        paintingView.isHidden = true
+        canvasResponderView.isHidden = true
+        playerView.isHidden = false
+        playerView.play(playable, at: framesPerSecond)
+    }
+    
+    func stopPlaying() {
+        playerView.stop()
+        playerView.isHidden = true
+        canvasResponderView.isHidden = false
+        paintingView.isHidden = false
+    }
 }
 
 // MARK: - Private Methods
 extension CanvasView {
     private func addSubviews() {
         addSubview(paperView)
+        addSubview(playerView)
         addSubview(paintingView)
         addSubview(canvasResponderView)
     }

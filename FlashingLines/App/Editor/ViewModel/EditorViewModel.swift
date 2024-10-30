@@ -9,14 +9,15 @@ import Foundation
 final class EditorViewModel<Layer> {
     
     // MARK: Private Properties
-    private let commandSubject: PassthroughSubject<EditorCommandPipe<Layer>, Never> = .init()
+    private let commandSubject: PassthroughSubject<EditorCommandPipe<Layer, ArrayStack<Layer>>, Never> = .init()
     private let stateSubject: CurrentValueSubject<EditorInterfaceState, Never> = .init(.initial)
     private var layerStack: ArrayStack<Layer> = []
 }
 
 // MARK: - EditorViewModelProtocol
 extension EditorViewModel: EditorViewModelProtocol {
-    var commandPublisher: any Publisher<EditorCommandPipe<Layer>, Never> {
+    typealias Playable = ArrayStack<Layer>
+    var commandPublisher: any Publisher<EditorCommandPipe<Layer, ArrayStack<Layer>>, Never> {
         commandSubject.eraseToAnyPublisher()
     }
     
@@ -27,17 +28,16 @@ extension EditorViewModel: EditorViewModelProtocol {
     func setupBindings(_ bindings: EditorBindings<Layer>) -> any Sequence<AnyCancellable> {
         [
             bindings.onTouchEvent.sink { [commandSubject, stateSubject] event in
-                let commandPipe: EditorCommandPipe<Layer>
+                let commandPipe: EditorCommandPipe<Layer, ArrayStack<Layer>>
                 switch event {
                 case .began(let location):
                     commandPipe = EditorCommandPipe(commands: [.moveUndoToDrawn, .begin(location: location)])
-                    stateSubject.value.undoButton.isEnabled = false
-                    stateSubject.value.redoButton.isEnabled = false
+                    stateSubject.value.undoState = .unavailable
                 case .moved(let location):
                     commandPipe = EditorCommandPipe(commands: [.continue(location: location, width: 10, color: Color(red: 0, green: 0, blue: 0, alpha: 0xFF))])
                 case .ended(let location):
                     commandPipe = EditorCommandPipe(commands: [.end(location: location, width: 10, color: Color(red: 0, green: 0, blue: 0, alpha: 0xFF)), .movePaintingToUndo])
-                    stateSubject.value.undoButton.isEnabled = true
+                    stateSubject.value.undoState = .undo
                 }
                 
                 commandSubject.send(commandPipe)
@@ -45,19 +45,16 @@ extension EditorViewModel: EditorViewModelProtocol {
             
             bindings.onUndoTap.sink { [commandSubject, stateSubject] in
                 commandSubject.send(.init(commands: [.undo]))
-                stateSubject.value.undoButton.isEnabled = false
-                stateSubject.value.redoButton.isEnabled = true
+                stateSubject.value.undoState = .redo
             },
             
             bindings.onRedoTap.sink { [commandSubject, stateSubject] in
                 commandSubject.send(.init(commands: [.redo]))
-                stateSubject.value.undoButton.isEnabled = true
-                stateSubject.value.redoButton.isEnabled = false
+                stateSubject.value.undoState = .undo
             },
             
             bindings.onNewLayerTap.sink { [commandSubject, stateSubject] in
-                stateSubject.value.undoButton.isEnabled = false
-                stateSubject.value.redoButton.isEnabled = false
+                stateSubject.value.undoState = .unavailable
                 commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .takeLayer]))
             },
             
@@ -67,7 +64,7 @@ extension EditorViewModel: EditorViewModelProtocol {
             },
             
             bindings.onDeleteTap.sink { [weak self] in
-                var commandPipe = EditorCommandPipe<Layer>(commands: [.clearCanvas])
+                var commandPipe = EditorCommandPipe<Layer, ArrayStack<Layer>>(commands: [.clearCanvas])
                 if let layer = self?.layerStack.pop() {
                     commandPipe.commands.append(.setDrawn(layer))
                 }
@@ -75,6 +72,18 @@ extension EditorViewModel: EditorViewModelProtocol {
                 commandPipe.commands.append(.setAssistLayer(self?.layerStack.peek()))
                 
                 self?.commandSubject.send(commandPipe)
+            },
+            
+            bindings.onPlayTap.sink { [weak self] in
+                guard let `self` else { return }
+                stateSubject.value.disableForPlayback()
+                commandSubject.send(.init(commands: [.play(layerStack)]))
+            },
+            
+            bindings.onPauseTap.sink { [commandSubject, stateSubject] in
+                stateSubject.value.enableForPlaybackEnd()
+                stateSubject.value.syncUndoRedo()
+                commandSubject.send(.init(commands: [.stop]))
             }
         ]
     }

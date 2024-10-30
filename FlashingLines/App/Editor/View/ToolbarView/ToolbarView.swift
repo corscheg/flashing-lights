@@ -75,6 +75,27 @@ final class ToolbarView: UIView {
         let panelOrigin = CGPoint(x: bounds.midX - panelSize.width / 2, y: bounds.midY - panelSize.height / 2)
         panelView.frame = CGRect(origin: panelOrigin, size: panelSize)
     }
+    
+    // MARK: Internal Methods
+    func setPencilState(_ state: EditorInterfaceState.ButtonState) {
+        panelView.setButton(.pencil, enabled: state.isEnabled)
+        panelView.setButton(.pencil, selected: state.isSelected)
+    }
+    
+    func setBrushState(_ state: EditorInterfaceState.ButtonState) {
+        panelView.setButton(.brush, enabled: state.isEnabled)
+        panelView.setButton(.brush, selected: state.isSelected)
+    }
+    
+    func setEraseState(_ state: EditorInterfaceState.ButtonState) {
+        panelView.setButton(.eraser, enabled: state.isEnabled)
+        panelView.setButton(.eraser, selected: state.isSelected)
+    }
+    
+    func setShapesState(_ state: EditorInterfaceState.ButtonState) {
+        panelView.setButton(.shape, enabled: state.isEnabled)
+        panelView.setButton(.shape, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings

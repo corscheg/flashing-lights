@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct EditorCommandPipe<Layer> {
+struct EditorCommandPipe<Layer, Playable: Collection> where Playable.Element == Layer {
     var commands: [Command]
 }
 
@@ -23,5 +23,7 @@ extension EditorCommandPipe {
         case setAssistLayer(Layer?)
         case clearCanvas
         case setDrawn(Layer)
+        case play(Playable)
+        case stop
     }
 }

@@ -107,6 +107,13 @@ final class ToolbarView: UIView {
         panelView.setButton(.colors, enabled: state.isEnabled)
         panelView.setButton(.colors, selected: state.isSelected)
     }
+    
+    func setColor(_ color: Color) {
+        panelView.runAction(on: .colors) { control in
+            guard let colorButton = control as? ColorButton else { return }
+            colorButton.setColor(UIColor(color: color))
+        }
+    }
 }
 
 // MARK: - Bindings

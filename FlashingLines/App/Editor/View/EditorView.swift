@@ -248,6 +248,7 @@ extension EditorView {
                 toolbarView.setColorsState(state.colorsButton)
                 
                 setColorPicker(hidden: !state.isColorPickerShown)
+                toolbarView.setColor(state.selectedColor)
             }
             .store(in: &cancellables)
     }

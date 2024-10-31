@@ -101,6 +101,10 @@ final class PanelControlView<Action: PanelControlAction, ContentFactory>: UIView
     func setButton(_ action: Action, enabled: Bool) {
         buttons[action]?.isEnabled = enabled
     }
+    
+    func runAction(on action: Action, operation: (UIControl) -> Void) {
+        buttons[action].map(operation)
+    }
 }
 
 // MARK: - Private Methods

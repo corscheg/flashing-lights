@@ -18,10 +18,14 @@ final class ToolbarView: UIView {
     private var cancellables: Set<AnyCancellable> = []
     
     // MARK: Visual Components
-    private lazy var panelView: PanelControlView<PanelAction, any ToolbarIcons> = {
-        let control = PanelControlView<PanelAction, any ToolbarIcons>(
+    private lazy var panelView: PanelControlView<PanelAction, PanelFactory> = {
+        let control = PanelControlView<PanelAction, PanelFactory>(
             colors: colors.interface,
-            icons: icons,
+            contentFactory: PanelFactory(
+                interfaceColors: colors.interface,
+                layout: layout,
+                images: icons
+            ),
             layout: layout,
             buttonSize: .regular,
             spacing: \.regular
@@ -37,6 +41,8 @@ final class ToolbarView: UIView {
                 bindings.onEraseTap.send()
             case .shape:
                 bindings.onShapeTap.send()
+            case .colors:
+                bindings.onColorsTap.send()
             }
         }
         .store(in: &cancellables)
@@ -96,6 +102,11 @@ final class ToolbarView: UIView {
         panelView.setButton(.shape, enabled: state.isEnabled)
         panelView.setButton(.shape, selected: state.isSelected)
     }
+    
+    func setColorsState(_ state: EditorInterfaceState.ButtonState) {
+        panelView.setButton(.colors, enabled: state.isEnabled)
+        panelView.setButton(.colors, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings
@@ -105,6 +116,7 @@ extension ToolbarView {
         let onBrushTap: PassthroughSubject<Void, Never> = .init()
         let onEraseTap: PassthroughSubject<Void, Never> = .init()
         let onShapeTap: PassthroughSubject<Void, Never> = .init()
+        let onColorsTap: PassthroughSubject<Void, Never> = .init()
     }
 }
 
@@ -112,9 +124,41 @@ extension ToolbarView {
 extension ToolbarView {
     private func addSubviews() {
         addSubview(panelView)
+    }
+}
+
+// MARK: - PanelFactory
+extension ToolbarView {
+    private struct PanelFactory {
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            self.panelView.setButton(.pencil, selected: true)
+        private let interfaceColors: any InterfaceColors
+        private let layout: any Layout
+        private let images: any ToolbarIcons
+        
+        init(interfaceColors: any InterfaceColors, layout: any Layout, images: any ToolbarIcons) {
+            self.interfaceColors = interfaceColors
+            self.layout = layout
+            self.images = images
+        }
+        
+        var pencil: UIControl {
+            ToolButton(colors: interfaceColors, sizes: layout.sizes, size: .regular, image: images.pencil)
+        }
+        
+        var brush: UIControl {
+            ToolButton(colors: interfaceColors, sizes: layout.sizes, size: .regular, image: images.brush)
+        }
+        
+        var erase: UIControl {
+            ToolButton(colors: interfaceColors, sizes: layout.sizes, size: .regular, image: images.erase)
+        }
+        
+        var instruments: UIControl {
+            ToolButton(colors: interfaceColors, sizes: layout.sizes, size: .regular, image: .instruments)
+        }
+        
+        var colors: UIControl {
+            ColorButton(layout: layout, colors: interfaceColors)
         }
     }
 }
@@ -122,12 +166,14 @@ extension ToolbarView {
 // MARK: - PanelAction
 extension ToolbarView {
     private enum PanelAction: PanelControlAction {
+        
         case pencil
         case brush
         case eraser
         case shape
+        case colors
         
-        var image: KeyPath<any ToolbarIcons, UIImage> {
+        var contentKeyPath: KeyPath<PanelFactory, UIControl> {
             switch self {
             case .pencil:
                 \.pencil
@@ -137,6 +183,8 @@ extension ToolbarView {
                 \.erase
             case .shape:
                 \.instruments
+            case .colors:
+                \.colors
             }
         }
     }

@@ -9,6 +9,7 @@ struct DefaultSpacings { }
 
 // MARK: - Spacings
 extension DefaultSpacings: Spacings {
+    var tiny: CGFloat { 2 }
     var small: CGFloat { 8 }
     var regular: CGFloat { 16 }
     var margin: CGFloat { 16 }

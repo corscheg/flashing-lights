@@ -5,7 +5,7 @@
 
 import UIKit
 
-protocol PanelControlAction<IconSet>: CaseIterable, Hashable, Comparable {
-    associatedtype IconSet
-    var image: KeyPath<IconSet, UIImage> { get }
+protocol PanelControlAction<ContentFactory>: CaseIterable, Hashable, Comparable {
+    associatedtype ContentFactory
+    var contentKeyPath: KeyPath<ContentFactory, UIControl> { get }
 }

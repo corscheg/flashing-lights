@@ -24,6 +24,7 @@ struct EditorInterfaceState {
     var brushButton: ButtonState
     var eraseButton: ButtonState
     var shapesButton: ButtonState
+    var colorsButton: ButtonState
     
     static var initial: EditorInterfaceState {
         .init(
@@ -38,7 +39,8 @@ struct EditorInterfaceState {
             pencilButton: .init(isSelected: true, isEnabled: true),
             brushButton: .init(isSelected: false, isEnabled: true),
             eraseButton: .init(isSelected: false, isEnabled: true),
-            shapesButton: .init(isSelected: false, isEnabled: true)
+            shapesButton: .init(isSelected: false, isEnabled: true),
+            colorsButton: .init(isSelected: false, isEnabled: true)
         )
     }
     
@@ -68,6 +70,7 @@ struct EditorInterfaceState {
         brushButton.isEnabled = false
         eraseButton.isEnabled = false
         shapesButton.isEnabled = false
+        colorsButton.isEnabled = false
     }
     
     mutating func enableForPlaybackEnd() {
@@ -80,6 +83,9 @@ struct EditorInterfaceState {
         pauseButton.isEnabled = false
         pencilButton.isEnabled = true
         brushButton.isEnabled = true
+        eraseButton.isEnabled = true
+        shapesButton.isEnabled = true
+        colorsButton.isEnabled = true
     }
 }
 

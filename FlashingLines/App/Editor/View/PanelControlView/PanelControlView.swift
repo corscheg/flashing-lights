@@ -6,7 +6,7 @@
 import Combine
 import UIKit
 
-final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where Action.IconSet == IconSet {
+final class PanelControlView<Action: PanelControlAction, ContentFactory>: UIView where Action.ContentFactory == ContentFactory {
     
     // MARK: Internal Properties
     var actionPublisher: some Publisher<Action, Never> {
@@ -15,25 +15,25 @@ final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where 
     
     // MARK: Private Properties
     private let colors: any InterfaceColors
-    private let icons: IconSet
+    private let contentFactory: ContentFactory
     private let layout: any Layout
     private let buttonSize: ToolButton.Size
     private let spacing: KeyPath<any Spacings, CGFloat>
     private let actionSubject: PassthroughSubject<Action, Never> = PassthroughSubject()
     
-    private var buttons: [Action: ToolButton] = [:]
+    private var buttons: [Action: UIControl] = [:]
     
     // MARK: Initializers
     init(
         frame: CGRect,
         colors: any InterfaceColors,
-        icons: IconSet,
+        contentFactory: ContentFactory,
         layout: any Layout,
         buttonSize: ToolButton.Size,
         spacing: KeyPath<any Spacings, CGFloat>
     ) {
         self.colors = colors
-        self.icons = icons
+        self.contentFactory = contentFactory
         self.layout = layout
         self.buttonSize = buttonSize
         self.spacing = spacing
@@ -44,7 +44,7 @@ final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where 
     
     convenience init(
         colors: any InterfaceColors,
-        icons: IconSet,
+        contentFactory: ContentFactory,
         layout: any Layout,
         buttonSize: ToolButton.Size,
         spacing: KeyPath<any Spacings, CGFloat>
@@ -52,7 +52,7 @@ final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where 
         self.init(
             frame: .zero,
             colors: colors,
-            icons: icons,
+            contentFactory: contentFactory,
             layout: layout,
             buttonSize: buttonSize,
             spacing: spacing
@@ -107,12 +107,7 @@ final class PanelControlView<Action: PanelControlAction, IconSet>: UIView where 
 extension PanelControlView {
     private func setupTools() {
         for action in Action.allCases {
-            let button = ToolButton(
-                colors: colors,
-                sizes: layout.sizes,
-                size: buttonSize,
-                image: icons[keyPath: action.image]
-            )
+            let button = contentFactory[keyPath: action.contentKeyPath]
             
             let buttonAction = UIAction { [actionSubject] _ in
                 actionSubject.send(action)

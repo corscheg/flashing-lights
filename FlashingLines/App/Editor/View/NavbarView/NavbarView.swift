@@ -18,10 +18,14 @@ final class NavbarView: UIView {
     private var cancellables: Set<AnyCancellable> = []
     
     // MARK: Visual Components
-    private lazy var undoControl: PanelControlView<UndoAction, any NavbarIcons> = {
-        let control = PanelControlView<UndoAction, any NavbarIcons>(
+    private lazy var undoControl: PanelControlView<UndoAction, UndoPanelFactory> = {
+        let control = PanelControlView<UndoAction, UndoPanelFactory>(
             colors: colors,
-            icons: icons,
+            contentFactory: UndoPanelFactory(
+                colors: colors,
+                sizes: layout.sizes,
+                icons: icons
+            ),
             layout: layout,
             buttonSize: .small,
             spacing: \.small
@@ -40,10 +44,14 @@ final class NavbarView: UIView {
         return control
     }()
     
-    private lazy var layerControl: PanelControlView<LayerAction, any NavbarIcons> = {
-        let control = PanelControlView<LayerAction, any NavbarIcons>(
+    private lazy var layerControl: PanelControlView<LayerAction, LayerPanelFactory> = {
+        let control = PanelControlView<LayerAction, LayerPanelFactory>(
             colors: colors,
-            icons: icons,
+            contentFactory: LayerPanelFactory(
+                colors: colors,
+                sizes: layout.sizes,
+                icons: icons
+            ),
             layout: layout,
             buttonSize: .regular,
             spacing: \.regular
@@ -64,10 +72,14 @@ final class NavbarView: UIView {
         return control
     }()
     
-    private lazy var playbackControl: PanelControlView<PlaybackAction, any NavbarIcons> = {
-        let control = PanelControlView<PlaybackAction, any NavbarIcons>(
+    private lazy var playbackControl: PanelControlView<PlaybackAction, PlaybackPanelFactory> = {
+        let control = PanelControlView<PlaybackAction, PlaybackPanelFactory>(
             colors: colors,
-            icons: icons,
+            contentFactory: PlaybackPanelFactory(
+                colors: colors,
+                sizes: layout.sizes,
+                icons: icons
+            ),
             layout: layout,
             buttonSize: .regular,
             spacing: \.regular
@@ -224,19 +236,70 @@ extension NavbarView {
     }
 }
 
+// MARK: - UndoPanelFactory
+extension NavbarView {
+    private struct UndoPanelFactory {
+        
+        private let colors: any InterfaceColors
+        private let sizes: any Sizes
+        private let icons: any NavbarIcons
+        
+        init(colors: any InterfaceColors, sizes: any Sizes, icons: any NavbarIcons) {
+            self.colors = colors
+            self.sizes = sizes
+            self.icons = icons
+        }
+        
+        var undo: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .small, image: icons.undo)
+        }
+        
+        var redo: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .small, image: icons.redo)
+        }
+    }
+}
+
 // MARK: - UndoAction
 extension NavbarView {
     private enum UndoAction: PanelControlAction {
         case undo
         case redo
         
-        var image: KeyPath<any NavbarIcons, UIImage> {
+        var contentKeyPath: KeyPath<UndoPanelFactory, UIControl> {
             switch self {
             case .undo:
                 \.undo
             case .redo:
                 \.redo
             }
+        }
+    }
+}
+
+// MARK: - LayerPanelFactory
+extension NavbarView {
+    private struct LayerPanelFactory {
+        private let colors: any InterfaceColors
+        private let sizes: any Sizes
+        private let icons: any NavbarIcons
+        
+        init(colors: any InterfaceColors, sizes: any Sizes, icons: any NavbarIcons) {
+            self.colors = colors
+            self.sizes = sizes
+            self.icons = icons
+        }
+        
+        var delete: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.bin)
+        }
+        
+        var addLayer: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.newFile)
+        }
+        
+        var showLayers: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.layers)
         }
     }
 }
@@ -248,15 +311,38 @@ extension NavbarView {
         case addLayer
         case showLayers
         
-        var image: KeyPath<any NavbarIcons, UIImage> {
+        var contentKeyPath: KeyPath<LayerPanelFactory, UIControl> {
             switch self {
             case .delete:
-                \.bin
+                \.delete
             case .addLayer:
-                \.newFile
+                \.addLayer
             case .showLayers:
-                \.layers
+                \.showLayers
             }
+        }
+    }
+}
+
+// MARK: - PlaybackPanelFactory
+extension NavbarView {
+    private struct PlaybackPanelFactory {
+        private let colors: any InterfaceColors
+        private let sizes: any Sizes
+        private let icons: any NavbarIcons
+        
+        init(colors: any InterfaceColors, sizes: any Sizes, icons: any NavbarIcons) {
+            self.colors = colors
+            self.sizes = sizes
+            self.icons = icons
+        }
+        
+        var play: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.play)
+        }
+        
+        var pause: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.pause)
         }
     }
 }
@@ -267,7 +353,7 @@ extension NavbarView {
         case play
         case pause
         
-        var image: KeyPath<any NavbarIcons, UIImage> {
+        var contentKeyPath: KeyPath<PlaybackPanelFactory, UIControl> {
             switch self {
             case .play:
                 \.play

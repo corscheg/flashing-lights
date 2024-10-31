@@ -53,6 +53,7 @@ final class PlayerView<Playable: Collection>: UIView where Playable.Element == U
     
     // MARK: Internal Methods
     func play(_ playable: Playable, at framesPerSecond: UInt) {
+        guard !playable.isEmpty else { return }
         self.playable = playable
         self.playableIndex = playable.startIndex
         self.frameDuration = 1.0 / CFTimeInterval(framesPerSecond)

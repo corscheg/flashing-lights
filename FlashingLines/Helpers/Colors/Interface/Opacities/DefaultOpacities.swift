@@ -9,5 +9,6 @@ struct DefaultOpacities { }
 
 // MARK: - Opacities
 extension DefaultOpacities: Opacities {
-    var assistOpacity: CGFloat { 0.3 }
+    var assist: CGFloat { 0.3 }
+    var disabled: CGFloat { 0.5 }
 }

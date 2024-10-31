@@ -18,7 +18,7 @@ final class PaintingView: UIView {
     private lazy var assistImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.alpha = opacities.assistOpacity
+        imageView.alpha = opacities.assist
         
         return imageView
     }()

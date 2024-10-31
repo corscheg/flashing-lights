@@ -30,23 +30,23 @@ struct ArrayStack<Element> {
 
 // MARK: - BidirectionalCollection
 extension ArrayStack: BidirectionalCollection {
-    subscript(position: Array<Element>.Index) -> Element {
+    subscript(position: Index) -> Element {
         storage[position]
     }
     
-    func index(before i: Array<Element>.Index) -> Array<Element>.Index {
+    func index(before i: Index) -> Index {
         storage.index(before: i)
     }
     
-    func index(after i: Array<Element>.Index) -> Array<Element>.Index {
+    func index(after i: Index) -> Index {
         storage.index(after: i)
     }
     
-    var startIndex: Array<Element>.Index {
+    var startIndex: Index {
         storage.startIndex
     }
     
-    var endIndex: Array<Element>.Index {
+    var endIndex: Index {
         storage.endIndex
     }
     

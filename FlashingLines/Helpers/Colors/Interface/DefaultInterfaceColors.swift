@@ -10,4 +10,5 @@ struct DefaultInterfaceColors: InterfaceColors {
     let background: UIColor = .black
     let disabled: UIColor = UIColor(red: 0.5490, green: 0.5490, blue: 0.5490, alpha: 1.0)
     let button: UIColor = .white
+    let opacities: any Opacities = DefaultOpacities()
 }

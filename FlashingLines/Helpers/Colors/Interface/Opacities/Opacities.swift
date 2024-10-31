@@ -6,5 +6,6 @@
 import Foundation
 
 protocol Opacities {
-    var assistOpacity: CGFloat { get }
+    var assist: CGFloat { get }
+    var disabled: CGFloat { get }
 }

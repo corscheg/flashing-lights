@@ -6,6 +6,7 @@
 import Foundation
 
 protocol Spacings {
+    var tiny: CGFloat { get }
     var small: CGFloat { get }
     var regular: CGFloat { get }
     var margin: CGFloat { get }

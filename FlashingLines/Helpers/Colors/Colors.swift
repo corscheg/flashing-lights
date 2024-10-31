@@ -7,5 +7,4 @@ import UIKit
 
 protocol Colors {
     var interface: any InterfaceColors { get }
-    var palette: any PaletteColors { get }
 }

@@ -10,5 +10,6 @@ protocol InterfaceColors {
     var background: UIColor { get }
     var disabled: UIColor { get }
     var button: UIColor { get }
+    var prominentBorder: UIColor { get }
     var opacities: any Opacities { get }
 }

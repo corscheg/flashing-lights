@@ -13,6 +13,7 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
     private let icons: any Icons
     private let layout: any Layout
     private let images: any Images
+    private let animationParameters: any AnimationParameters
     private let screen: UIScreen
     
     // MARK: Visual Components
@@ -22,16 +23,26 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
         icons: icons,
         layout: layout,
         images: images,
+        animationParameters: animationParameters,
         screen: screen
     )
     
     // MARK: Initializers
-    init(viewModel: ViewModel, colors: any Colors, icons: any Icons, layout: any Layout, images: any Images, screen: UIScreen) {
+    init(
+        viewModel: ViewModel,
+        colors: any Colors,
+        icons: any Icons,
+        layout: any Layout,
+        images: any Images,
+        animationParameters: any AnimationParameters,
+        screen: UIScreen
+    ) {
         self.viewModel = viewModel
         self.colors = colors
         self.icons = icons
         self.layout = layout
         self.images = images
+        self.animationParameters = animationParameters
         self.screen = screen
         super.init(nibName: nil, bundle: nil)
     }

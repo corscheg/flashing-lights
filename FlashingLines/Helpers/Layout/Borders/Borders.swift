@@ -6,5 +6,6 @@
 import Foundation
 
 protocol Borders {
+    var thinRegular: CGFloat { get }
     var regular: CGFloat { get }
 }

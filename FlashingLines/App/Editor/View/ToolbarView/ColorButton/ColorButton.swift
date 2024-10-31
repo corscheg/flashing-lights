@@ -15,7 +15,7 @@ final class ColorButton: UIButton {
     private lazy var colorView: UIView = {
         let view = UIView()
         view.layer.borderColor = colors.accent.cgColor
-        view.backgroundColor = colors.accent
+        view.isUserInteractionEnabled = false
         
         return view
     }()
@@ -30,6 +30,11 @@ final class ColorButton: UIButton {
     
     convenience init(layout: any Layout, colors: any InterfaceColors) {
         self.init(frame: .zero, layout: layout, colors: colors)
+    }
+    
+    convenience init(layout: any Layout, colors: any InterfaceColors, initialColor: UIColor) {
+        self.init(layout: layout, colors: colors)
+        setColor(initialColor)
     }
     
     @available(*, unavailable)

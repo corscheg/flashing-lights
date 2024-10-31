@@ -9,5 +9,6 @@ struct DefaultCornerRadiuses { }
 
 // MARK: - CornerRadiuses
 extension DefaultCornerRadiuses: CornerRadiuses {
+    var small: CGFloat { 4 }
     var large: CGFloat { 20 }
 }

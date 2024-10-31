@@ -13,6 +13,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
     private let icons: any Icons
     private let layout: any Layout
     private let images: any Images
+    private let animationParameters: any AnimationParameters
     private let screen: UIScreen
     private let bindings: EditorBindings<UIImage> = .init()
     
@@ -53,6 +54,22 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         view.bindings.onBrushTap.subscribe(bindings.onBrushTap).store(in: &cancellables)
         view.bindings.onEraseTap.subscribe(bindings.onEraseTap).store(in: &cancellables)
         view.bindings.onShapeTap.subscribe(bindings.onShapesTap).store(in: &cancellables)
+        view.bindings.onColorsTap.subscribe(bindings.onColorsTap).store(in: &cancellables)
+        
+        return view
+    }()
+    
+    private lazy var colorSelectorView: ColorSelectorView = {
+        let view = ColorSelectorView(
+            colorSet: viewModel.state.initialColorSet,
+            colors: colors.interface,
+            layout: layout,
+            icons: icons.toolbar
+        )
+        
+        view.bindings.onColorSelect.subscribe(bindings.onColorSelect).store(in: &cancellables)
+        
+        view.alpha = viewModel.state.isColorPickerShown ? 1.0 : .zero
         
         return view
     }()
@@ -65,6 +82,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         icons: any Icons,
         layout: any Layout,
         images: any Images,
+        animationParameters: any AnimationParameters,
         screen: UIScreen
     ) {
         self.viewModel = viewModel
@@ -72,6 +90,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         self.icons = icons
         self.layout = layout
         self.images = images
+        self.animationParameters = animationParameters
         self.screen = screen
         
         super.init(frame: frame)
@@ -87,6 +106,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         icons: any Icons,
         layout: any Layout,
         images: any Images,
+        animationParameters: any AnimationParameters,
         screen: UIScreen
     ) {
         self.init(
@@ -96,6 +116,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
             icons: icons,
             layout: layout,
             images: images,
+            animationParameters: animationParameters,
             screen: screen
         )
     }
@@ -143,6 +164,14 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         
         let canvasOrigin = CGPoint(x: spacedRect.minX, y: navbarView.frame.maxY + layout.spacings.largeVertical)
         canvasView.frame = CGRect(origin: canvasOrigin, size: canvasSize)
+        
+        let colorPickerSize = colorSelectorView.sizeThatFits(spacedRect.size)
+        let colorPickerOrigin = CGPoint(
+            x: spacedRect.midX - colorPickerSize.width / 2,
+            y: toolbarView.frame.minY - colorPickerSize.height - layout.spacings.regular
+        )
+        
+        colorSelectorView.frame = CGRect(origin: colorPickerOrigin, size: colorPickerSize)
     }
 }
 
@@ -156,6 +185,7 @@ extension EditorView {
         addSubview(navbarView)
         addSubview(canvasView)
         addSubview(toolbarView)
+        addSubview(colorSelectorView)
     }
     
     private func setupBindings() {
@@ -200,6 +230,8 @@ extension EditorView {
             .store(in: &cancellables)
         
         viewModel.statePublisher
+            .eraseToAnyPublisher()
+            .removeDuplicates()
             .sink { [weak self] state in
                 guard let `self` else { return }
                 navbarView.setUndoState(state.undoButton)
@@ -214,7 +246,17 @@ extension EditorView {
                 toolbarView.setEraseState(state.eraseButton)
                 toolbarView.setShapesState(state.shapesButton)
                 toolbarView.setColorsState(state.colorsButton)
+                
+                setColorPicker(hidden: !state.isColorPickerShown)
             }
             .store(in: &cancellables)
+    }
+    
+    private func setColorPicker(hidden: Bool) {
+        let newAlpha: CGFloat = hidden ? 0 : 1
+        
+        UIView.animate(withDuration: animationParameters.duration) {
+            self.colorSelectorView.alpha = newAlpha
+        }
     }
 }

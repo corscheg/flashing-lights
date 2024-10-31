@@ -20,4 +20,6 @@ struct EditorBindings<Layer> {
     let onShapesTap: PassthroughSubject<Void, Never> = .init()
     let onTouchEvent: PassthroughSubject<TouchEvent, Never> = .init()
     let onLayerTaken: PassthroughSubject<Layer, Never> = .init()
+    let onColorsTap: PassthroughSubject<Void, Never> = .init()
+    let onColorSelect: PassthroughSubject<Color, Never> = .init()
 }

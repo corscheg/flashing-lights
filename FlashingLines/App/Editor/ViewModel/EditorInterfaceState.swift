@@ -25,8 +25,13 @@ struct EditorInterfaceState {
     var eraseButton: ButtonState
     var shapesButton: ButtonState
     var colorsButton: ButtonState
+    var isColorPickerShown: Bool
     
-    static var initial: EditorInterfaceState {
+    let initialColorSet: ColorSet
+    
+    var selectedColor: Color
+    
+    static func initial(colorSet: ColorSet) -> EditorInterfaceState {
         .init(
             undoState: .unavailable,
             undoButton: .init(isSelected: false, isEnabled: false),
@@ -40,7 +45,10 @@ struct EditorInterfaceState {
             brushButton: .init(isSelected: false, isEnabled: true),
             eraseButton: .init(isSelected: false, isEnabled: true),
             shapesButton: .init(isSelected: false, isEnabled: true),
-            colorsButton: .init(isSelected: false, isEnabled: true)
+            colorsButton: .init(isSelected: false, isEnabled: true),
+            isColorPickerShown: false,
+            initialColorSet: colorSet,
+            selectedColor: colorSet.color1
         )
     }
     
@@ -89,9 +97,14 @@ struct EditorInterfaceState {
     }
 }
 
+// MARK: - Equatable
+extension EditorInterfaceState: Equatable {
+    
+}
+
 // MARK: - UndoState
 extension EditorInterfaceState {
-    enum UndoState {
+    enum UndoState: Equatable {
         case unavailable
         case undo
         case redo
@@ -100,7 +113,7 @@ extension EditorInterfaceState {
 
 // MARK: -  ButtonState
 extension EditorInterfaceState {
-    struct ButtonState {
+    struct ButtonState: Equatable {
         var isSelected: Bool
         var isEnabled: Bool
     }

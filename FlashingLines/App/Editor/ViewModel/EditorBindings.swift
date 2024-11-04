@@ -24,4 +24,6 @@ struct EditorBindings<Layer> {
     let onColorSelect: PassthroughSubject<Color, Never> = .init()
     let onDuplicateTap: PassthroughSubject<Void, Never> = .init()
     let onDeleteAllTap: PassthroughSubject<Void, Never> = .init()
+    let onSpeedTap: PassthroughSubject<Void, Never> = .init()
+    let onSpeedSelect: PassthroughSubject<UInt, Never> = .init()
 }

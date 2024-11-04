@@ -27,6 +27,7 @@ struct EditorInterfaceState: EditorInterfaceStateProtocol {
     var colorsButton: ButtonState
     var duplicateButton: ButtonState
     var deleteAllButton: ButtonState
+    var speedButton: ButtonState
     var isColorPickerShown: Bool
     
     let initialColorSet: ColorSet
@@ -34,6 +35,7 @@ struct EditorInterfaceState: EditorInterfaceStateProtocol {
     var selectedColor: Color
     var isEraserSelected: Bool
     var lastAction: ActionType
+    var playbackFPS: UInt
     
     static func initial(colorSet: ColorSet) -> EditorInterfaceState {
         .init(
@@ -52,11 +54,13 @@ struct EditorInterfaceState: EditorInterfaceStateProtocol {
             colorsButton: .init(isSelected: false, isEnabled: true),
             duplicateButton: .init(isSelected: false, isEnabled: true),
             deleteAllButton: .init(isSelected: false, isEnabled: true),
+            speedButton: .init(isSelected: false, isEnabled: true),
             isColorPickerShown: false,
             initialColorSet: colorSet,
             selectedColor: colorSet.color1,
             isEraserSelected: false,
-            lastAction: .paint
+            lastAction: .paint,
+            playbackFPS: 10
         )
     }
     
@@ -89,6 +93,7 @@ struct EditorInterfaceState: EditorInterfaceStateProtocol {
         colorsButton.isEnabled = false
         duplicateButton.isEnabled = false
         deleteAllButton.isEnabled = false
+        speedButton.isEnabled = false
     }
     
     mutating func enableForPlaybackEnd() {
@@ -106,6 +111,7 @@ struct EditorInterfaceState: EditorInterfaceStateProtocol {
         colorsButton.isEnabled = true
         duplicateButton.isEnabled = true
         deleteAllButton.isEnabled = true
+        speedButton.isEnabled = true
     }
 }
 

@@ -18,6 +18,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
     private let bindings: EditorBindings<UIImage> = .init()
     
     private var cancellables: Set<AnyCancellable> = []
+    private weak var controller: UIViewController?
     
     // MARK: Visual Components
     private lazy var navbarView: NavbarView = {
@@ -32,6 +33,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         view.bindings.onPauseTap.subscribe(bindings.onPauseTap).store(in: &cancellables)
         view.bindings.onDuplicateTap.subscribe(bindings.onDuplicateTap).store(in: &cancellables)
         view.bindings.onDeleteAllTap.subscribe(bindings.onDeleteAllTap).store(in: &cancellables)
+        view.bindings.onSpeedTap.subscribe(bindings.onSpeedTap).store(in: &cancellables)
         
         return view
     }()
@@ -79,6 +81,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
     // MARK: Initializers
     init(
         frame: CGRect,
+        controller: UIViewController,
         viewModel: ViewModel,
         colors: any Colors,
         icons: any Icons,
@@ -94,6 +97,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         self.images = images
         self.animationParameters = animationParameters
         self.screen = screen
+        self.controller = controller
         
         super.init(frame: frame)
         
@@ -103,6 +107,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
     }
     
     convenience init(
+        controller: UIViewController,
         viewModel: ViewModel,
         colors: any Colors,
         icons: any Icons,
@@ -113,6 +118,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
     ) {
         self.init(
             frame: .zero,
+            controller: controller,
             viewModel: viewModel,
             colors: colors,
             icons: icons,
@@ -222,8 +228,8 @@ extension EditorView {
                         canvasView.clearPainting()
                     case .setDrawn(let image):
                         canvasView.setDrawnImage(image)
-                    case .play(let playable):
-                        canvasView.startPlaying(playable, at: 10)
+                    case .play(let playable, let speed):
+                        canvasView.startPlaying(playable, at: speed)
                     case .stop:
                         canvasView.stopPlaying()
                     case .beginErase(location: let location):
@@ -238,6 +244,8 @@ extension EditorView {
                         canvasView.undoErase()
                     case .redoErase:
                         canvasView.redoErase()
+                    case .showSpeedSelector(let currentSpeed):
+                        showSpeedAlert(currentSpeed: currentSpeed)
                     }
                 }
             }
@@ -257,6 +265,7 @@ extension EditorView {
                 navbarView.setPauseState(state.pauseButton)
                 navbarView.setDuplicateState(state.duplicateButton)
                 navbarView.setDeleteAllState(state.deleteAllButton)
+                navbarView.setSpeedState(state.speedButton)
                 toolbarView.setPencilState(state.pencilButton)
                 toolbarView.setBrushState(state.brushButton)
                 toolbarView.setEraseState(state.eraseButton)
@@ -275,5 +284,22 @@ extension EditorView {
         UIView.animate(withDuration: animationParameters.duration) {
             self.colorSelectorView.alpha = newAlpha
         }
+    }
+    
+    private func showSpeedAlert(currentSpeed: UInt) {
+        let alertController = UIAlertController(title: "Select Playback Speed", message: nil, preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.keyboardType = .numberPad
+            textField.text = "\(currentSpeed)"
+        }
+        
+        let okAction = UIAlertAction(title: "OK", style: .default) { [bindings] _ in
+            guard let textField = alertController.textFields?.first, let speed = UInt(textField.text ?? "") else { return }
+            
+            bindings.onSpeedSelect.send(speed)
+        }
+        
+        alertController.addAction(okAction)
+        controller?.present(alertController, animated: window != nil)
     }
 }

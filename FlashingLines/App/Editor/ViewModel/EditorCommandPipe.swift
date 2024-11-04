@@ -23,7 +23,7 @@ extension EditorCommandPipe {
         case setAssistLayer(Layer?)
         case clearCanvas
         case setDrawn(Layer)
-        case play(Playable)
+        case play(Playable, speed: UInt)
         case stop
         case beginErase(location: CGPoint)
         case continueErase(location: CGPoint, width: CGFloat)
@@ -31,5 +31,6 @@ extension EditorCommandPipe {
         case commitErase
         case undoErase
         case redoErase
+        case showSpeedSelector(currentSpeed: UInt)
     }
 }

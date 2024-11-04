@@ -11,7 +11,7 @@ struct DefaultSpacings { }
 extension DefaultSpacings: Spacings {
     var tiny: CGFloat { 2 }
     var small: CGFloat { 8 }
-    var regular: CGFloat { 16 }
+    var regular: CGFloat { 10 }
     var margin: CGFloat { 16 }
     var largeVertical: CGFloat { 32 }
     var moderateVertical: CGFloat { 22 }

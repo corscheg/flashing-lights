@@ -15,4 +15,5 @@ protocol NavbarIcons {
     var redo: UIImage { get }
     var duplicate: UIImage { get }
     var deleteAll: UIImage { get }
+    var speed: UIImage { get }
 }

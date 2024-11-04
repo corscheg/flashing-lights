@@ -20,6 +20,7 @@ protocol EditorInterfaceStateProtocol: Equatable {
     var colorsButton: ButtonState { get }
     var duplicateButton: ButtonState { get }
     var deleteAllButton: ButtonState { get }
+    var speedButton: ButtonState { get }
     var isColorPickerShown: Bool { get }
     var initialColorSet: ColorSet { get }
     var selectedColor: Color { get }

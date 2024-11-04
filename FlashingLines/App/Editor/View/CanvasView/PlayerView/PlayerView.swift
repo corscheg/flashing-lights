@@ -66,6 +66,7 @@ final class PlayerView<Playable: Collection>: UIView where Playable.Element == U
         playable = nil
         frameDuration = nil
         screenFrameDuration = nil
+        screenFramesPerFrame = nil
         counter = 0
         displayLink?.invalidate()
         displayLink = nil

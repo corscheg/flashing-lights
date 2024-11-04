@@ -95,6 +95,8 @@ final class NavbarView: UIView {
                 bindings.onPauseTap.send()
             case .play:
                 bindings.onPlayTap.send()
+            case .speed:
+                bindings.onSpeedTap.send()
             }
         }
         .store(in: &cancellables)
@@ -226,6 +228,11 @@ final class NavbarView: UIView {
         layerControl.setButton(.deleteAll, enabled: state.isEnabled)
         layerControl.setButton(.deleteAll, selected: state.isSelected)
     }
+    
+    func setSpeedState(_ state: ButtonState) {
+        playbackControl.setButton(.speed, enabled: state.isEnabled)
+        playbackControl.setButton(.speed, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings
@@ -240,6 +247,7 @@ extension NavbarView {
         let onPlayTap: PassthroughSubject<Void, Never> = .init()
         let onDuplicateTap: PassthroughSubject<Void, Never> = .init()
         let onDeleteAllTap: PassthroughSubject<Void, Never> = .init()
+        let onSpeedTap: PassthroughSubject<Void, Never> = .init()
     }
 }
 
@@ -374,12 +382,17 @@ extension NavbarView {
         var pause: UIControl {
             ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.pause)
         }
+        
+        var speed: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.speed)
+        }
     }
 }
 
 // MARK: - PlaybackAction
 extension NavbarView {
     private enum PlaybackAction: PanelControlAction {
+        case speed
         case play
         case pause
         
@@ -389,6 +402,8 @@ extension NavbarView {
                 \.play
             case .pause:
                 \.pause
+            case .speed:
+                \.speed
             }
         }
     }

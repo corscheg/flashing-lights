@@ -165,6 +165,14 @@ extension EditorViewModel: EditorViewModelProtocol {
                 layerStack.clear()
                 stateSubject.value.undoState = .unavailable
                 commandSubject.send(.init(commands: [.commitErase, .clearCanvas, .setAssistLayer(nil)]))
+            },
+            
+            bindings.onSpeedTap.sink { [commandSubject, stateSubject] in
+                commandSubject.send(.init(commands: [.showSpeedSelector(currentSpeed: stateSubject.value.playbackFPS)]))
+            },
+            
+            bindings.onSpeedSelect.sink { [stateSubject] speed in
+                stateSubject.value.playbackFPS = speed
             }
         ]
     }
@@ -194,7 +202,7 @@ extension EditorViewModel {
     
     private func play() {
         stateSubject.value.disableForPlayback()
-        commandSubject.send(.init(commands: [.play(layerStack)]))
+        commandSubject.send(.init(commands: [.play(layerStack, speed: stateSubject.value.playbackFPS)]))
         stateSubject.value.isColorPickerShown = false
         stateSubject.value.colorsButton.isSelected = false
     }

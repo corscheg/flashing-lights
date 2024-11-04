@@ -18,6 +18,7 @@ final class EditorViewController<ViewModel: EditorViewModelProtocol>: UIViewCont
     
     // MARK: Visual Components
     private lazy var editorView: EditorView<ViewModel, ViewModel.Playable> = EditorView(
+        controller: self,
         viewModel: viewModel,
         colors: colors,
         icons: icons,

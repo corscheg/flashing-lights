@@ -65,6 +65,8 @@ final class NavbarView: UIView {
                 bindings.onNewLayerTap.send()
 //            case .showLayers:
 //                bindings.onShowLayersTap.send()
+            case .duplicate:
+                bindings.onDuplicateTap.send()
             }
         }
         .store(in: &cancellables)
@@ -212,6 +214,11 @@ final class NavbarView: UIView {
         playbackControl.setButton(.pause, enabled: state.isEnabled)
         playbackControl.setButton(.pause, selected: state.isSelected)
     }
+    
+    func setDuplicateState(_ state: EditorInterfaceState.ButtonState) {
+        layerControl.setButton(.duplicate, enabled: state.isEnabled)
+        layerControl.setButton(.duplicate, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings
@@ -224,6 +231,7 @@ extension NavbarView {
         let onShowLayersTap: PassthroughSubject<Void, Never> = .init()
         let onPauseTap: PassthroughSubject<Void, Never> = .init()
         let onPlayTap: PassthroughSubject<Void, Never> = .init()
+        let onDuplicateTap: PassthroughSubject<Void, Never> = .init()
     }
 }
 
@@ -301,6 +309,10 @@ extension NavbarView {
         var showLayers: UIControl {
             ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.layers)
         }
+        
+        var duplicate: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.duplicate)
+        }
     }
 }
 
@@ -309,6 +321,7 @@ extension NavbarView {
     private enum LayerAction: PanelControlAction {
         case delete
         case addLayer
+        case duplicate
 //        case showLayers
         
         var contentKeyPath: KeyPath<LayerPanelFactory, UIControl> {
@@ -319,6 +332,8 @@ extension NavbarView {
                 \.addLayer
 //            case .showLayers:
 //                \.showLayers
+            case .duplicate:
+                \.duplicate
             }
         }
     }

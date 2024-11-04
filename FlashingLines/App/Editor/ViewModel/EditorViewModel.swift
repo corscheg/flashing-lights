@@ -96,16 +96,17 @@ extension EditorViewModel: EditorViewModelProtocol {
                 stateSubject.value.colorsButton.isSelected = false
             },
             
-            bindings.onNewLayerTap.sink { [commandSubject, stateSubject] in
-                stateSubject.value.undoState = .unavailable
-                commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .commitErase, .takeLayer]))
-                stateSubject.value.isColorPickerShown = false
-                stateSubject.value.colorsButton.isSelected = false
+            bindings.onNewLayerTap.sink { [weak self] in
+                self?.takeLayer(duplicate: false)
             },
             
             bindings.onLayerTaken.sink { [weak self, stateSubject] layer in
-                self?.layerStack.push(layer)
-                self?.commandSubject.send(EditorCommandPipe(commands: [.setAssistLayer(layer)]))
+                self?.layerStack.push(layer.layer)
+                var pipe = EditorCommandPipe<Layer, ArrayStack<Layer>>(commands: [.setAssistLayer(layer.layer)])
+                if layer.duplicate {
+                    pipe.commands.append(.setDrawn(layer.layer))
+                }
+                self?.commandSubject.send(pipe)
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
             },
@@ -160,7 +161,21 @@ extension EditorViewModel: EditorViewModelProtocol {
                 stateSubject.value.isEraserSelected = false
                 stateSubject.value.eraseButton.isSelected = false
                 stateSubject.value.pencilButton.isSelected = true
+            },
+            
+            bindings.onDuplicateTap.sink { [weak self] in
+                self?.takeLayer(duplicate: true)
             }
         ]
+    }
+}
+
+// MARK: - Private Methods
+extension EditorViewModel {
+    func takeLayer(duplicate: Bool) {
+        stateSubject.value.undoState = .unavailable
+        commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .commitErase, .takeLayer(duplicate: duplicate)]))
+        stateSubject.value.isColorPickerShown = false
+        stateSubject.value.colorsButton.isSelected = false
     }
 }

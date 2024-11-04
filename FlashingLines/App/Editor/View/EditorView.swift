@@ -30,6 +30,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         view.bindings.onShowLayersTap.subscribe(bindings.onShowLayersTap).store(in: &cancellables)
         view.bindings.onPlayTap.subscribe(bindings.onPlayTap).store(in: &cancellables)
         view.bindings.onPauseTap.subscribe(bindings.onPauseTap).store(in: &cancellables)
+        view.bindings.onDuplicateTap.subscribe(bindings.onDuplicateTap).store(in: &cancellables)
         
         return view
     }()
@@ -211,9 +212,9 @@ extension EditorView {
                         canvasView.performUndo()
                     case .redo:
                         canvasView.performRedo()
-                    case .takeLayer:
+                    case .takeLayer(let duplicate):
                         guard let image = canvasView.takeCurrentImage() else { return }
-                        bindings.onLayerTaken.send(image)
+                        bindings.onLayerTaken.send((layer: image, duplicate: duplicate))
                     case .setAssistLayer(let image):
                         canvasView.setAssistImage(image)
                     case .clearCanvas:
@@ -253,6 +254,7 @@ extension EditorView {
                 navbarView.setShowLayersState(state.showLayersButton)
                 navbarView.setPlayState(state.playButton)
                 navbarView.setPauseState(state.pauseButton)
+                navbarView.setDuplicateState(state.duplicateButton)
                 toolbarView.setPencilState(state.pencilButton)
                 toolbarView.setBrushState(state.brushButton)
                 toolbarView.setEraseState(state.eraseButton)

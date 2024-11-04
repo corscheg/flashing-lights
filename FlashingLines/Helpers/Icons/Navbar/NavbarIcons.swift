@@ -13,4 +13,5 @@ protocol NavbarIcons {
     var play: UIImage { get }
     var undo: UIImage { get }
     var redo: UIImage { get }
+    var duplicate: UIImage { get }
 }

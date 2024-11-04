@@ -13,4 +13,5 @@ struct DefaultNavbarIcons: NavbarIcons {
     let play: UIImage = UIImage(resource: .play)
     let undo: UIImage = UIImage(resource: .undo)
     let redo: UIImage = UIImage(resource: .redo)
+    let duplicate: UIImage = UIImage(resource: .duplicate)
 }

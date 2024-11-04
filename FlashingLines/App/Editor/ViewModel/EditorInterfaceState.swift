@@ -5,7 +5,7 @@
 
 import Foundation
 
-struct EditorInterfaceState {
+struct EditorInterfaceState: EditorInterfaceStateProtocol {
     
     // MARK: Internal Properties
     var undoState: UndoState {
@@ -109,9 +109,6 @@ struct EditorInterfaceState {
     }
 }
 
-// MARK: - Equatable
-extension EditorInterfaceState: Equatable { }
-
 // MARK: - ActionType
 extension EditorInterfaceState {
     enum ActionType: Equatable {
@@ -126,13 +123,5 @@ extension EditorInterfaceState {
         case unavailable
         case undo
         case redo
-    }
-}
-
-// MARK: -  ButtonState
-extension EditorInterfaceState {
-    struct ButtonState: Equatable {
-        var isSelected: Bool
-        var isEnabled: Bool
     }
 }

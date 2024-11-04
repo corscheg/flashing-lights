@@ -182,47 +182,47 @@ final class NavbarView: UIView {
     }
     
     // MARK: Internal Methods
-    func setUndoState(_ state: EditorInterfaceState.ButtonState) {
+    func setUndoState(_ state: ButtonState) {
         undoControl.setButton(.undo, enabled: state.isEnabled)
         undoControl.setButton(.undo, selected: state.isSelected)
     }
     
-    func setRedoState(_ state: EditorInterfaceState.ButtonState) {
+    func setRedoState(_ state: ButtonState) {
         undoControl.setButton(.redo, enabled: state.isEnabled)
         undoControl.setButton(.redo, selected: state.isSelected)
     }
     
-    func setDeleteState(_ state: EditorInterfaceState.ButtonState) {
+    func setDeleteState(_ state: ButtonState) {
         layerControl.setButton(.delete, enabled: state.isEnabled)
         layerControl.setButton(.delete, selected: state.isSelected)
     }
     
-    func setNewLayerState(_ state: EditorInterfaceState.ButtonState) {
+    func setNewLayerState(_ state: ButtonState) {
         layerControl.setButton(.addLayer, enabled: state.isEnabled)
         layerControl.setButton(.addLayer, selected: state.isSelected)
     }
     
-    func setShowLayersState(_ state: EditorInterfaceState.ButtonState) {
+    func setShowLayersState(_ state: ButtonState) {
 //        layerControl.setButton(.showLayers, enabled: state.isEnabled)
 //        layerControl.setButton(.showLayers, selected: state.isSelected)
     }
     
-    func setPlayState(_ state: EditorInterfaceState.ButtonState) {
+    func setPlayState(_ state: ButtonState) {
         playbackControl.setButton(.play, enabled: state.isEnabled)
         playbackControl.setButton(.play, selected: state.isSelected)
     }
     
-    func setPauseState(_ state: EditorInterfaceState.ButtonState) {
+    func setPauseState(_ state: ButtonState) {
         playbackControl.setButton(.pause, enabled: state.isEnabled)
         playbackControl.setButton(.pause, selected: state.isSelected)
     }
     
-    func setDuplicateState(_ state: EditorInterfaceState.ButtonState) {
+    func setDuplicateState(_ state: ButtonState) {
         layerControl.setButton(.duplicate, enabled: state.isEnabled)
         layerControl.setButton(.duplicate, selected: state.isSelected)
     }
     
-    func setDeleteAllState(_ state: EditorInterfaceState.ButtonState) {
+    func setDeleteAllState(_ state: ButtonState) {
         layerControl.setButton(.deleteAll, enabled: state.isEnabled)
         layerControl.setButton(.deleteAll, selected: state.isSelected)
     }

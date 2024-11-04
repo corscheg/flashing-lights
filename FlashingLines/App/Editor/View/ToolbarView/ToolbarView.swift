@@ -83,27 +83,27 @@ final class ToolbarView: UIView {
     }
     
     // MARK: Internal Methods
-    func setPencilState(_ state: EditorInterfaceState.ButtonState) {
+    func setPencilState(_ state: ButtonState) {
         panelView.setButton(.pencil, enabled: state.isEnabled)
         panelView.setButton(.pencil, selected: state.isSelected)
     }
     
-    func setBrushState(_ state: EditorInterfaceState.ButtonState) {
+    func setBrushState(_ state: ButtonState) {
 //        panelView.setButton(.brush, enabled: state.isEnabled)
 //        panelView.setButton(.brush, selected: state.isSelected)
     }
     
-    func setEraseState(_ state: EditorInterfaceState.ButtonState) {
+    func setEraseState(_ state: ButtonState) {
         panelView.setButton(.eraser, enabled: state.isEnabled)
         panelView.setButton(.eraser, selected: state.isSelected)
     }
     
-    func setShapesState(_ state: EditorInterfaceState.ButtonState) {
+    func setShapesState(_ state: ButtonState) {
 //        panelView.setButton(.shape, enabled: state.isEnabled)
 //        panelView.setButton(.shape, selected: state.isSelected)
     }
     
-    func setColorsState(_ state: EditorInterfaceState.ButtonState) {
+    func setColorsState(_ state: ButtonState) {
         panelView.setButton(.colors, enabled: state.isEnabled)
         panelView.setButton(.colors, selected: state.isSelected)
     }

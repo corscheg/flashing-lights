@@ -13,4 +13,10 @@ final class DrawnPictureView: PictureView {
             image.draw(in: bounds)
         }
     }
+    
+    func mergeMask(_ image: UIImage) {
+        imageView.image = UIGraphicsImageRenderer(size: bounds.size).image { context in
+            
+        }
+    }
 }

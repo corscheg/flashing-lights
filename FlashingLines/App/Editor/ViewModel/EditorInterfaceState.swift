@@ -30,6 +30,8 @@ struct EditorInterfaceState {
     let initialColorSet: ColorSet
     
     var selectedColor: Color
+    var isEraserSelected: Bool
+    var lastAction: ActionType
     
     static func initial(colorSet: ColorSet) -> EditorInterfaceState {
         .init(
@@ -48,7 +50,9 @@ struct EditorInterfaceState {
             colorsButton: .init(isSelected: false, isEnabled: true),
             isColorPickerShown: false,
             initialColorSet: colorSet,
-            selectedColor: colorSet.color1
+            selectedColor: colorSet.color1,
+            isEraserSelected: false,
+            lastAction: .paint
         )
     }
     
@@ -98,8 +102,14 @@ struct EditorInterfaceState {
 }
 
 // MARK: - Equatable
-extension EditorInterfaceState: Equatable {
-    
+extension EditorInterfaceState: Equatable { }
+
+// MARK: - ActionType
+extension EditorInterfaceState {
+    enum ActionType: Equatable {
+        case paint
+        case erase
+    }
 }
 
 // MARK: - UndoState

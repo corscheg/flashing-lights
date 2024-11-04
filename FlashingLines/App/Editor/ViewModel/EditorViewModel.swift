@@ -12,6 +12,7 @@ final class EditorViewModel<Layer> {
     private let commandSubject: PassthroughSubject<EditorCommandPipe<Layer, ArrayStack<Layer>>, Never> = .init()
     private let stateSubject: CurrentValueSubject<EditorInterfaceState, Never>
     private var layerStack: ArrayStack<Layer> = []
+    private let defaultWidth: CGFloat = 10
     
     // MARK: Initializers
     init(colorSet: ColorSet) {
@@ -35,16 +36,33 @@ extension EditorViewModel: EditorViewModelProtocol {
     
     func setupBindings(_ bindings: EditorBindings<Layer>) -> any Sequence<AnyCancellable> {
         [
-            bindings.onTouchEvent.sink { [commandSubject, stateSubject] event in
+            bindings.onTouchEvent.sink { [commandSubject, stateSubject, defaultWidth] event in
                 let commandPipe: EditorCommandPipe<Layer, ArrayStack<Layer>>
                 switch event {
                 case .began(let location):
-                    commandPipe = EditorCommandPipe(commands: [.moveUndoToDrawn, .begin(location: location)])
+                    if stateSubject.value.isEraserSelected {
+                        commandPipe = EditorCommandPipe(commands: [.moveUndoToDrawn, .commitErase, .beginErase(location: location)])
+                    } else {
+                        commandPipe = EditorCommandPipe(commands: [.moveUndoToDrawn, .commitErase, .begin(location: location)])
+                    }
+                    
                     stateSubject.value.undoState = .unavailable
                 case .moved(let location):
-                    commandPipe = EditorCommandPipe(commands: [.continue(location: location, width: 10, color: stateSubject.value.selectedColor)])
+                    if stateSubject.value.isEraserSelected {
+                        commandPipe = EditorCommandPipe(commands: [.continueErase(location: location, width: defaultWidth)])
+                    } else {
+                        commandPipe = EditorCommandPipe(commands: [.continue(location: location, width: defaultWidth, color: stateSubject.value.selectedColor)])
+                    }
+                    
                 case .ended(let location):
-                    commandPipe = EditorCommandPipe(commands: [.end(location: location, width: 10, color: stateSubject.value.selectedColor), .movePaintingToUndo])
+                    if stateSubject.value.isEraserSelected {
+                        commandPipe = EditorCommandPipe(commands: [.endErase(location: location, width: defaultWidth)])
+                        stateSubject.value.lastAction = .erase
+                    } else {
+                        commandPipe = EditorCommandPipe(commands: [.end(location: location, width: defaultWidth, color: stateSubject.value.selectedColor), .movePaintingToUndo])
+                        stateSubject.value.lastAction = .paint
+                    }
+                    
                     stateSubject.value.undoState = .undo
                 }
                 
@@ -54,14 +72,25 @@ extension EditorViewModel: EditorViewModelProtocol {
             },
             
             bindings.onUndoTap.sink { [commandSubject, stateSubject] in
-                commandSubject.send(.init(commands: [.undo]))
+                switch stateSubject.value.lastAction {
+                case .paint:
+                    commandSubject.send(.init(commands: [.undo]))
+                case .erase:
+                    commandSubject.send(.init(commands: [.undoErase]))
+                }
+                
                 stateSubject.value.undoState = .redo
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
             },
             
             bindings.onRedoTap.sink { [commandSubject, stateSubject] in
-                commandSubject.send(.init(commands: [.redo]))
+                switch stateSubject.value.lastAction {
+                case .paint:
+                    commandSubject.send(.init(commands: [.redo]))
+                case .erase:
+                    commandSubject.send(.init(commands: [.redoErase]))
+                }
                 stateSubject.value.undoState = .undo
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
@@ -69,7 +98,7 @@ extension EditorViewModel: EditorViewModelProtocol {
             
             bindings.onNewLayerTap.sink { [commandSubject, stateSubject] in
                 stateSubject.value.undoState = .unavailable
-                commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .takeLayer]))
+                commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .commitErase, .takeLayer]))
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
             },
@@ -119,6 +148,18 @@ extension EditorViewModel: EditorViewModelProtocol {
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
                 stateSubject.value.selectedColor = color
+            },
+            
+            bindings.onEraseTap.sink { [stateSubject] in
+                stateSubject.value.isEraserSelected = true
+                stateSubject.value.eraseButton.isSelected = true
+                stateSubject.value.pencilButton.isSelected = false
+            },
+            
+            bindings.onPencilTap.sink { [stateSubject] in
+                stateSubject.value.isEraserSelected = false
+                stateSubject.value.eraseButton.isSelected = false
+                stateSubject.value.pencilButton.isSelected = true
             }
         ]
     }

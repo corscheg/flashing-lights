@@ -127,6 +127,22 @@ final class CanvasView<Playable: Collection>: UIView where Playable.Element == U
         canvasResponderView.isHidden = false
         paintingView.isHidden = false
     }
+    
+    func startErase(at location: CGPoint) {
+        paintingView.startErase(at: location)
+    }
+    
+    func continueErase(to location: CGPoint, width: CGFloat) {
+        paintingView.continueErase(to: location, width: width)
+    }
+    
+    func endErase(at location: CGPoint, width: CGFloat) {
+        paintingView.endErase(at: location, width: width)
+    }
+    
+    func commitErase() {
+        paintingView.commitErase()
+    }
 }
 
 // MARK: - Private Methods

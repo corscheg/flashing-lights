@@ -224,6 +224,18 @@ extension EditorView {
                         canvasView.startPlaying(playable, at: 10)
                     case .stop:
                         canvasView.stopPlaying()
+                    case .beginErase(location: let location):
+                        canvasView.startErase(at: location)
+                    case .continueErase(location: let location, width: let width):
+                        canvasView.continueErase(to: location, width: width)
+                    case .endErase(location: let location, width: let width):
+                        canvasView.endErase(at: location, width: width)
+                    case .commitErase:
+                        canvasView.commitErase()
+                    case .undoErase:
+                        fatalError()
+                    case .redoErase:
+                        fatalError()
                     }
                 }
             }

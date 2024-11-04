@@ -10,8 +10,17 @@ final class PaintingView: UIView {
     // MARK: Private Properties
     private let opacities: any Opacities
     private var lastLocation: CGPoint?
+    private var lastEraseLocation: CGPoint?
+    private var maskSet: Bool = false
+    private var storedMaskImage: UIImage?
     
     // MARK: Visual Components
+    private lazy var maskedView: UIView = {
+        let view = UIView()
+        view.isUserInteractionEnabled = false
+        
+        return view
+    }()
     private lazy var drawnView = DrawnPictureView()
     private lazy var undoableView = UndoablePictureView()
     private lazy var drawableView = DrawablePictureView()
@@ -48,9 +57,15 @@ final class PaintingView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         assistImageView.frame = bounds
-        drawnView.frame = bounds
-        undoableView.frame = bounds
-        drawableView.frame = bounds
+        maskedView.frame = bounds
+        drawnView.frame = maskedView.bounds
+        undoableView.frame = maskedView.bounds
+        drawableView.frame = maskedView.bounds
+        
+        if !maskSet {
+            setDefaultMask()
+            maskSet = true
+        }
     }
     
     // MARK: Internal Methods
@@ -112,14 +127,74 @@ final class PaintingView: UIView {
         drawnView.clear()
         drawnView.mergeImage(image)
     }
+    
+    func startErase(at location: CGPoint) {
+        lastEraseLocation = location
+    }
+    
+    func continueErase(to location: CGPoint, width: CGFloat) {
+        addErase(to: location, width: width, resetLocation: false)
+    }
+    
+    func endErase(at location: CGPoint, width: CGFloat) {
+        addErase(to: location, width: width, resetLocation: true)
+    }
+    
+    func commitErase() {
+        guard let storedMaskImage else { return }
+        drawnView.mergeMask(storedMaskImage)
+        setDefaultMask()
+    }
 }
 
 // MARK: - Private Methods
 extension PaintingView {
     private func addSubviews() {
         addSubview(assistImageView)
-        addSubview(drawnView)
-        addSubview(undoableView)
-        addSubview(drawableView)
+        addSubview(maskedView)
+        maskedView.addSubview(drawnView)
+        maskedView.addSubview(undoableView)
+        maskedView.addSubview(drawableView)
+    }
+    
+    private func setDefaultMask() {
+        let blackImage = UIGraphicsImageRenderer(size: bounds.size).image { context in
+            UIColor.black.setFill()
+            context.fill(bounds)
+        }
+        
+        let maskLayer = CALayer()
+        let maskImage = blackImage.cgImage
+        storedMaskImage = blackImage
+        maskLayer.frame = bounds
+        maskLayer.contents = maskImage
+        
+        maskedView.layer.mask = maskLayer
+    }
+    
+    private func addErase(to location: CGPoint, width: CGFloat, resetLocation: Bool) {
+        guard let lastEraseLocation else { return }
+        guard let storedMaskImage else { return }
+        
+        let newMaskImage = UIGraphicsImageRenderer(size: bounds.size).image { context in
+            storedMaskImage.draw(in: bounds)
+            
+            context.cgContext.setStrokeColor(UIColor.black.cgColor)
+            context.cgContext.setLineWidth(width)
+            context.cgContext.setLineCap(.round)
+            context.cgContext.setBlendMode(.clear)
+            context.cgContext.move(to: lastEraseLocation)
+            context.cgContext.addLine(to: location)
+            context.cgContext.strokePath()
+        }
+        
+        maskedView.layer.mask?.contents = newMaskImage.cgImage
+        self.storedMaskImage = newMaskImage
+        
+        if resetLocation {
+            self.lastEraseLocation = nil
+        } else {
+            self.lastEraseLocation = location
+        }
     }
 }

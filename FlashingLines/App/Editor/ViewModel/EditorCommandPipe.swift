@@ -25,5 +25,11 @@ extension EditorCommandPipe {
         case setDrawn(Layer)
         case play(Playable)
         case stop
+        case beginErase(location: CGPoint)
+        case continueErase(location: CGPoint, width: CGFloat)
+        case endErase(location: CGPoint, width: CGFloat)
+        case commitErase
+        case undoErase
+        case redoErase
     }
 }

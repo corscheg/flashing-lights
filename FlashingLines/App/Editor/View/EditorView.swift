@@ -213,9 +213,9 @@ extension EditorView {
                         canvasView.performUndo()
                     case .redo:
                         canvasView.performRedo()
-                    case .takeLayer(let duplicate):
+                    case .takeLayer(let duplicate, let play):
                         guard let image = canvasView.takeCurrentImage() else { return }
-                        bindings.onLayerTaken.send((layer: image, duplicate: duplicate))
+                        bindings.onLayerTaken.send((layer: image, duplicate: duplicate, play: play))
                     case .setAssistLayer(let image):
                         canvasView.setAssistImage(image)
                     case .clearCanvas:

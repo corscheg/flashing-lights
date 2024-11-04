@@ -97,7 +97,7 @@ extension EditorViewModel: EditorViewModelProtocol {
             },
             
             bindings.onNewLayerTap.sink { [weak self] in
-                self?.takeLayer(duplicate: false)
+                self?.takeLayer(duplicate: false, play: false)
             },
             
             bindings.onLayerTaken.sink { [weak self, stateSubject] layer in
@@ -106,38 +106,30 @@ extension EditorViewModel: EditorViewModelProtocol {
                 if layer.duplicate {
                     pipe.commands.append(.setDrawn(layer.layer))
                 }
+                if layer.play {
+                    self?.play()
+                }
                 self?.commandSubject.send(pipe)
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
             },
             
-            bindings.onDeleteTap.sink { [weak self, stateSubject] in
-                var commandPipe = EditorCommandPipe<Layer, ArrayStack<Layer>>(commands: [.clearCanvas])
-                if let layer = self?.layerStack.pop() {
-                    commandPipe.commands.append(.setDrawn(layer))
-                }
-                
-                commandPipe.commands.append(.setAssistLayer(self?.layerStack.peek()))
-                
-                self?.commandSubject.send(commandPipe)
-                stateSubject.value.isColorPickerShown = false
-                stateSubject.value.colorsButton.isSelected = false
+            bindings.onDeleteTap.sink { [weak self] in
+                self?.deleteLayer()
             },
             
             bindings.onPlayTap.sink { [weak self] in
-                guard let `self` else { return }
-                stateSubject.value.disableForPlayback()
-                commandSubject.send(.init(commands: [.play(layerStack)]))
-                stateSubject.value.isColorPickerShown = false
-                stateSubject.value.colorsButton.isSelected = false
+                self?.takeLayer(duplicate: false, play: true)
             },
             
-            bindings.onPauseTap.sink { [commandSubject, stateSubject] in
+            bindings.onPauseTap.sink { [weak self] in
+                guard let `self` else { return }
                 stateSubject.value.enableForPlaybackEnd()
                 stateSubject.value.syncUndoRedo()
                 commandSubject.send(.init(commands: [.stop]))
                 stateSubject.value.isColorPickerShown = false
                 stateSubject.value.colorsButton.isSelected = false
+                deleteLayer()
             },
             
             bindings.onColorsTap.sink { [stateSubject] in
@@ -164,7 +156,7 @@ extension EditorViewModel: EditorViewModelProtocol {
             },
             
             bindings.onDuplicateTap.sink { [weak self] in
-                self?.takeLayer(duplicate: true)
+                self?.takeLayer(duplicate: true, play: false)
             },
             
             bindings.onDeleteAllTap.sink { [weak self] in
@@ -180,9 +172,29 @@ extension EditorViewModel: EditorViewModelProtocol {
 
 // MARK: - Private Methods
 extension EditorViewModel {
-    func takeLayer(duplicate: Bool) {
+    private func takeLayer(duplicate: Bool, play: Bool) {
         stateSubject.value.undoState = .unavailable
-        commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .commitErase, .takeLayer(duplicate: duplicate)]))
+        commandSubject.send(.init(commands: [.movePaintingToUndo, .moveUndoToDrawn, .commitErase, .takeLayer(duplicate: duplicate, play: play)]))
+        stateSubject.value.isColorPickerShown = false
+        stateSubject.value.colorsButton.isSelected = false
+    }
+    
+    private func deleteLayer() {
+        var commandPipe = EditorCommandPipe<Layer, ArrayStack<Layer>>(commands: [.clearCanvas])
+        if let layer = layerStack.pop() {
+            commandPipe.commands.append(.setDrawn(layer))
+        }
+        
+        commandPipe.commands.append(.setAssistLayer(layerStack.peek()))
+        
+        commandSubject.send(commandPipe)
+        stateSubject.value.isColorPickerShown = false
+        stateSubject.value.colorsButton.isSelected = false
+    }
+    
+    private func play() {
+        stateSubject.value.disableForPlayback()
+        commandSubject.send(.init(commands: [.play(layerStack)]))
         stateSubject.value.isColorPickerShown = false
         stateSubject.value.colorsButton.isSelected = false
     }

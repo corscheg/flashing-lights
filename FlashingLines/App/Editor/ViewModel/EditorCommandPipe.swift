@@ -19,7 +19,7 @@ extension EditorCommandPipe {
         case moveUndoToDrawn
         case undo
         case redo
-        case takeLayer(duplicate: Bool)
+        case takeLayer(duplicate: Bool, play: Bool)
         case setAssistLayer(Layer?)
         case clearCanvas
         case setDrawn(Layer)

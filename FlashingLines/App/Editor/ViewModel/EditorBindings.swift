@@ -19,7 +19,7 @@ struct EditorBindings<Layer> {
     let onEraseTap: PassthroughSubject<Void, Never> = .init()
     let onShapesTap: PassthroughSubject<Void, Never> = .init()
     let onTouchEvent: PassthroughSubject<TouchEvent, Never> = .init()
-    let onLayerTaken: PassthroughSubject<(layer: Layer, duplicate: Bool), Never> = .init()
+    let onLayerTaken: PassthroughSubject<(layer: Layer, duplicate: Bool, play: Bool), Never> = .init()
     let onColorsTap: PassthroughSubject<Void, Never> = .init()
     let onColorSelect: PassthroughSubject<Color, Never> = .init()
     let onDuplicateTap: PassthroughSubject<Void, Never> = .init()

@@ -35,12 +35,12 @@ final class ToolbarView: UIView {
             switch action {
             case .pencil:
                 bindings.onPencilTap.send()
-            case .brush:
-                bindings.onBrushTap.send()
+//            case .brush:
+//                bindings.onBrushTap.send()
             case .eraser:
                 bindings.onEraseTap.send()
-            case .shape:
-                bindings.onShapeTap.send()
+//            case .shape:
+//                bindings.onShapeTap.send()
             case .colors:
                 bindings.onColorsTap.send()
             }
@@ -89,8 +89,8 @@ final class ToolbarView: UIView {
     }
     
     func setBrushState(_ state: EditorInterfaceState.ButtonState) {
-        panelView.setButton(.brush, enabled: state.isEnabled)
-        panelView.setButton(.brush, selected: state.isSelected)
+//        panelView.setButton(.brush, enabled: state.isEnabled)
+//        panelView.setButton(.brush, selected: state.isSelected)
     }
     
     func setEraseState(_ state: EditorInterfaceState.ButtonState) {
@@ -99,8 +99,8 @@ final class ToolbarView: UIView {
     }
     
     func setShapesState(_ state: EditorInterfaceState.ButtonState) {
-        panelView.setButton(.shape, enabled: state.isEnabled)
-        panelView.setButton(.shape, selected: state.isSelected)
+//        panelView.setButton(.shape, enabled: state.isEnabled)
+//        panelView.setButton(.shape, selected: state.isSelected)
     }
     
     func setColorsState(_ state: EditorInterfaceState.ButtonState) {
@@ -175,21 +175,21 @@ extension ToolbarView {
     private enum PanelAction: PanelControlAction {
         
         case pencil
-        case brush
+//        case brush
         case eraser
-        case shape
+//        case shape
         case colors
         
         var contentKeyPath: KeyPath<PanelFactory, UIControl> {
             switch self {
             case .pencil:
                 \.pencil
-            case .brush:
-                \.brush
+//            case .brush:
+//                \.brush
             case .eraser:
                 \.erase
-            case .shape:
-                \.instruments
+//            case .shape:
+//                \.instruments
             case .colors:
                 \.colors
             }

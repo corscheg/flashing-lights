@@ -63,8 +63,8 @@ final class NavbarView: UIView {
                 bindings.onDeleteTap.send()
             case .addLayer:
                 bindings.onNewLayerTap.send()
-            case .showLayers:
-                bindings.onShowLayersTap.send()
+//            case .showLayers:
+//                bindings.onShowLayersTap.send()
             }
         }
         .store(in: &cancellables)
@@ -199,8 +199,8 @@ final class NavbarView: UIView {
     }
     
     func setShowLayersState(_ state: EditorInterfaceState.ButtonState) {
-        layerControl.setButton(.showLayers, enabled: state.isEnabled)
-        layerControl.setButton(.showLayers, selected: state.isSelected)
+//        layerControl.setButton(.showLayers, enabled: state.isEnabled)
+//        layerControl.setButton(.showLayers, selected: state.isSelected)
     }
     
     func setPlayState(_ state: EditorInterfaceState.ButtonState) {
@@ -309,7 +309,7 @@ extension NavbarView {
     private enum LayerAction: PanelControlAction {
         case delete
         case addLayer
-        case showLayers
+//        case showLayers
         
         var contentKeyPath: KeyPath<LayerPanelFactory, UIControl> {
             switch self {
@@ -317,8 +317,8 @@ extension NavbarView {
                 \.delete
             case .addLayer:
                 \.addLayer
-            case .showLayers:
-                \.showLayers
+//            case .showLayers:
+//                \.showLayers
             }
         }
     }

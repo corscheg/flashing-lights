@@ -13,6 +13,7 @@ final class PaintingView: UIView {
     private var lastEraseLocation: CGPoint?
     private var maskSet: Bool = false
     private var storedMaskImage: UIImage?
+    private var undidMaskImage: UIImage?
     
     // MARK: Visual Components
     private lazy var maskedView: UIView = {
@@ -144,6 +145,19 @@ final class PaintingView: UIView {
         guard let storedMaskImage else { return }
         drawnView.mergeMask(storedMaskImage)
         setDefaultMask()
+        undidMaskImage = nil
+    }
+    
+    func undoErase() {
+        undidMaskImage = storedMaskImage
+        setDefaultMask()
+    }
+    
+    func redoErase() {
+        guard let undidMaskImage else { return }
+        storedMaskImage = undidMaskImage
+        self.undidMaskImage = nil
+        maskedView.layer.mask?.contents = storedMaskImage?.cgImage
     }
 }
 

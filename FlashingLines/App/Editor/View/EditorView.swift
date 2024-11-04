@@ -233,9 +233,9 @@ extension EditorView {
                     case .commitErase:
                         canvasView.commitErase()
                     case .undoErase:
-                        fatalError()
+                        canvasView.undoErase()
                     case .redoErase:
-                        fatalError()
+                        canvasView.redoErase()
                     }
                 }
             }

@@ -143,6 +143,14 @@ final class CanvasView<Playable: Collection>: UIView where Playable.Element == U
     func commitErase() {
         paintingView.commitErase()
     }
+    
+    func undoErase() {
+        paintingView.undoErase()
+    }
+    
+    func redoErase() {
+        paintingView.redoErase()
+    }
 }
 
 // MARK: - Private Methods

@@ -14,4 +14,5 @@ struct DefaultNavbarIcons: NavbarIcons {
     let undo: UIImage = UIImage(resource: .undo)
     let redo: UIImage = UIImage(resource: .redo)
     let duplicate: UIImage = UIImage(resource: .duplicate)
+    let deleteAll: UIImage = UIImage(resource: .deleteAll)
 }

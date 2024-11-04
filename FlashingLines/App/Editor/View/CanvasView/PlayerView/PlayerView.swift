@@ -69,6 +69,7 @@ final class PlayerView<Playable: Collection>: UIView where Playable.Element == U
         counter = 0
         displayLink?.invalidate()
         displayLink = nil
+        imageView.image = nil
     }
     
     // MARK: Actions

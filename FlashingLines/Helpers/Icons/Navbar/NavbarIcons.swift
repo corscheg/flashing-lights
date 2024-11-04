@@ -14,4 +14,5 @@ protocol NavbarIcons {
     var undo: UIImage { get }
     var redo: UIImage { get }
     var duplicate: UIImage { get }
+    var deleteAll: UIImage { get }
 }

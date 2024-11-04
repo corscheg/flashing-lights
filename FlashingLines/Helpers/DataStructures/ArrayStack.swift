@@ -19,6 +19,10 @@ struct ArrayStack<Element> {
         storage.popLast()
     }
     
+    mutating func clear() {
+        storage.removeAll()
+    }
+    
     var isEmpty: Bool {
         storage.isEmpty
     }

@@ -26,6 +26,7 @@ struct EditorInterfaceState {
     var shapesButton: ButtonState
     var colorsButton: ButtonState
     var duplicateButton: ButtonState
+    var deleteAllButton: ButtonState
     var isColorPickerShown: Bool
     
     let initialColorSet: ColorSet
@@ -50,6 +51,7 @@ struct EditorInterfaceState {
             shapesButton: .init(isSelected: false, isEnabled: true),
             colorsButton: .init(isSelected: false, isEnabled: true),
             duplicateButton: .init(isSelected: false, isEnabled: true),
+            deleteAllButton: .init(isSelected: false, isEnabled: true),
             isColorPickerShown: false,
             initialColorSet: colorSet,
             selectedColor: colorSet.color1,
@@ -86,6 +88,7 @@ struct EditorInterfaceState {
         shapesButton.isEnabled = false
         colorsButton.isEnabled = false
         duplicateButton.isEnabled = false
+        deleteAllButton.isEnabled = false
     }
     
     mutating func enableForPlaybackEnd() {
@@ -102,6 +105,7 @@ struct EditorInterfaceState {
         shapesButton.isEnabled = true
         colorsButton.isEnabled = true
         duplicateButton.isEnabled = true
+        deleteAllButton.isEnabled = true
     }
 }
 

@@ -31,6 +31,7 @@ final class EditorView<ViewModel: EditorViewModelProtocol, Playable: Collection>
         view.bindings.onPlayTap.subscribe(bindings.onPlayTap).store(in: &cancellables)
         view.bindings.onPauseTap.subscribe(bindings.onPauseTap).store(in: &cancellables)
         view.bindings.onDuplicateTap.subscribe(bindings.onDuplicateTap).store(in: &cancellables)
+        view.bindings.onDeleteAllTap.subscribe(bindings.onDeleteAllTap).store(in: &cancellables)
         
         return view
     }()
@@ -255,6 +256,7 @@ extension EditorView {
                 navbarView.setPlayState(state.playButton)
                 navbarView.setPauseState(state.pauseButton)
                 navbarView.setDuplicateState(state.duplicateButton)
+                navbarView.setDeleteAllState(state.deleteAllButton)
                 toolbarView.setPencilState(state.pencilButton)
                 toolbarView.setBrushState(state.brushButton)
                 toolbarView.setEraseState(state.eraseButton)

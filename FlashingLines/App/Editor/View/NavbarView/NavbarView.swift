@@ -67,6 +67,8 @@ final class NavbarView: UIView {
 //                bindings.onShowLayersTap.send()
             case .duplicate:
                 bindings.onDuplicateTap.send()
+            case .deleteAll:
+                bindings.onDeleteAllTap.send()
             }
         }
         .store(in: &cancellables)
@@ -219,6 +221,11 @@ final class NavbarView: UIView {
         layerControl.setButton(.duplicate, enabled: state.isEnabled)
         layerControl.setButton(.duplicate, selected: state.isSelected)
     }
+    
+    func setDeleteAllState(_ state: EditorInterfaceState.ButtonState) {
+        layerControl.setButton(.deleteAll, enabled: state.isEnabled)
+        layerControl.setButton(.deleteAll, selected: state.isSelected)
+    }
 }
 
 // MARK: - Bindings
@@ -232,6 +239,7 @@ extension NavbarView {
         let onPauseTap: PassthroughSubject<Void, Never> = .init()
         let onPlayTap: PassthroughSubject<Void, Never> = .init()
         let onDuplicateTap: PassthroughSubject<Void, Never> = .init()
+        let onDeleteAllTap: PassthroughSubject<Void, Never> = .init()
     }
 }
 
@@ -313,6 +321,10 @@ extension NavbarView {
         var duplicate: UIControl {
             ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.duplicate)
         }
+        
+        var deleteAll: UIControl {
+            ToolButton(colors: colors, sizes: sizes, size: .regular, image: icons.deleteAll)
+        }
     }
 }
 
@@ -322,6 +334,7 @@ extension NavbarView {
         case delete
         case addLayer
         case duplicate
+        case deleteAll
 //        case showLayers
         
         var contentKeyPath: KeyPath<LayerPanelFactory, UIControl> {
@@ -334,6 +347,8 @@ extension NavbarView {
 //                \.showLayers
             case .duplicate:
                 \.duplicate
+            case .deleteAll:
+                \.deleteAll
             }
         }
     }

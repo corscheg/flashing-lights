@@ -165,6 +165,14 @@ extension EditorViewModel: EditorViewModelProtocol {
             
             bindings.onDuplicateTap.sink { [weak self] in
                 self?.takeLayer(duplicate: true)
+            },
+            
+            bindings.onDeleteAllTap.sink { [weak self] in
+                guard let `self` else { return }
+                
+                layerStack.clear()
+                stateSubject.value.undoState = .unavailable
+                commandSubject.send(.init(commands: [.commitErase, .clearCanvas, .setAssistLayer(nil)]))
             }
         ]
     }

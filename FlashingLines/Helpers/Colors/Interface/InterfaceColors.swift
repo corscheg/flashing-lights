@@ -11,5 +11,6 @@ protocol InterfaceColors {
     var disabled: UIColor { get }
     var button: UIColor { get }
     var prominentBorder: UIColor { get }
+    var outlineBorder: UIColor { get }
     var opacities: any Opacities { get }
 }

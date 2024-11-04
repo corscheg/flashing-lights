@@ -10,7 +10,8 @@ struct DefaultInterfaceColors: InterfaceColors {
     let background: UIColor = .init(light: .white, dark: .black)
     let disabled: UIColor = UIColor(hexRed: 0x8B, green: 0x8B, blue: 0x8B, alpha: 0xFF)
     let button: UIColor = .init(light: .black, dark: .white)
-    var prominentBorder: UIColor = UIColor(hexRed: 0x55, green: 0x54, blue: 0x54, floatAlpha: 0.16)
+    let prominentBorder: UIColor = UIColor(hexRed: 0x55, green: 0x54, blue: 0x54, floatAlpha: 0.16)
+    let outlineBorder: UIColor = .systemGray
     let opacities: any Opacities = DefaultOpacities()
 }
 

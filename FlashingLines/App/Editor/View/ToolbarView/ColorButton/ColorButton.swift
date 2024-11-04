@@ -14,7 +14,8 @@ final class ColorButton: UIButton {
     // MARK: Visual Components
     private lazy var colorView: UIView = {
         let view = UIView()
-        view.layer.borderColor = colors.accent.cgColor
+        view.layer.borderColor = isSelected ? colors.accent.cgColor : colors.outlineBorder.cgColor
+        view.layer.borderWidth = isSelected ? layout.borders.regular : layout.borders.thinRegular
         view.isUserInteractionEnabled = false
         
         return view
@@ -87,7 +88,8 @@ extension ColorButton {
     }
     
     private func setSelected(_ selected: Bool) {
-        colorView.layer.borderWidth = selected ? layout.borders.regular : .zero
+        colorView.layer.borderColor = selected ? colors.accent.cgColor : colors.outlineBorder.cgColor
+        colorView.layer.borderWidth = selected ? layout.borders.regular : layout.borders.thinRegular
     }
     
     private func setEnabled(_ enabled: Bool) {
